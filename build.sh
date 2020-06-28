@@ -15,15 +15,10 @@ VERSION=1.0.0
 
 DISTRIBUTION=$1
 CODENAME=$2
-case "$DISTRIBUTION" in
-    debian) COMPONENTS=main,contrib,non-free ;;
-    ubuntu) COMPONENTS=main,restricted,universe,multiverse ;;
-    *) echo >&2 "$DISTRIBUTION: unknown distribution"
-esac
 
 docker build \
-    --build-arg TARGETDISTRIBUTION="$CODENAME" \
-    --build-arg TARGETCOMPONENTS="$COMPONENTS" \
+    --build-arg BASE="$DISTRIBUTION:$CODENAME" \
+    --build-arg DISTRIBUTION="$DISTRIBUTION" \
     --build-arg BUILDDATE="$BUILD_DATE" \
     --build-arg VERSION="$VERSION" \
     --build-arg TITLE="$TITLE" \

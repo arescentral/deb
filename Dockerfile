@@ -1,38 +1,4 @@
-FROM ubuntu:focal AS bootstrap
-
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update
-RUN apt-get install -y debootstrap
-
-ARG TARGETARCH=amd64
-ARG TARGETDISTRIBUTION
-ARG TARGETCOMPONENTS
-
-RUN debootstrap \
-    --arch=$TARGETARCH \
-    --foreign \
-    --variant minbase \
-    --components=$TARGETCOMPONENTS \
-    $TARGETDISTRIBUTION /var/chroot
-RUN chroot /var/chroot /debootstrap/debootstrap --second-stage
-
-RUN chroot /var/chroot apt-get update
-RUN chroot /var/chroot apt-get upgrade --no-install-recommends
-RUN chroot /var/chroot apt-get install --no-install-recommends -y \
-    build-essential devscripts equivs lintian software-properties-common
-RUN chroot /var/chroot apt-get autoremove --purge
-RUN chroot /var/chroot apt-get clean
-
-RUN rm -rf \
-    /var/chroot/usr/share/info/* \
-    /var/chroot/usr/share/locale/* \
-    /var/chroot/usr/share/man/* \
-    /var/chroot/var/cache/apt/* \
-    /var/chroot/var/lib/apt/lists/* \
-    /var/chroot/var/log/*
-
-########################################################################
+ARG BASE
 
 FROM golang:1.14 AS go
 
@@ -45,9 +11,17 @@ RUN go build *.go
 
 ########################################################################
 
-FROM scratch
+FROM $BASE
 
-COPY --from=bootstrap /var/chroot /
+RUN apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        build-essential \
+        devscripts \
+        equivs \
+        lintian \
+        software-properties-common \
+ && rm -rf /var/lib/apt/lists/*
+
 COPY --from=go /src/deb-drone /usr/local/bin/deb-drone
 
 ARG BUILDDATE
