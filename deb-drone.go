@@ -40,12 +40,11 @@ func main() {
 	)
 
 	runIn(buildDir, "dpkg-buildpackage")
+	changes := globSingle(filepath.Join(workDir, "*.changes"))
+	run("lintian", "--no-tag-display-limit", changes)
 	for _, src := range outputs(buildDir) {
 		cp(src, filepath.Base(src))
 	}
-
-	changes := fmt.Sprintf("%s_%s_%s.changes", s.source, s.version, s.arch)
-	run("lintian", "--no-tag-display-limit", changes)
 }
 
 // Runs command; exits on failure.

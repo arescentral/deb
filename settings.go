@@ -5,7 +5,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"runtime"
 	"strings"
 )
 
@@ -15,7 +14,6 @@ type settings struct {
 	sourceVersion string
 	dir           string
 	archive       string
-	arch          string
 	sources       []string
 	keyserver     string
 	recvKeys      []string
@@ -24,7 +22,6 @@ type settings struct {
 const (
 	dirSetting       = "PLUGIN_DIR"
 	archiveSetting   = "PLUGIN_ARCHIVE"
-	archSetting      = "PLUGIN_ARCH"
 	sourcesSetting   = "PLUGIN_SOURCES"
 	keyserverSetting = "PLUGIN_KEYSERVER"
 	recvKeysSetting  = "PLUGIN_RECV_KEYS"
@@ -37,7 +34,6 @@ func loadSettings() settings {
 		sourceVersion: sourceVersion(),
 		dir:           dir(),
 		archive:       archive(),
-		arch:          arch(),
 		sources:       sources(),
 		keyserver:     keyserver(),
 		recvKeys:      recvKeys(),
@@ -46,7 +42,6 @@ func loadSettings() settings {
 
 func dir() string        { return getenv(dirSetting, "debian") }
 func archive() string    { return getenv(archiveSetting, "dist/*") }
-func arch() string       { return getenv(archSetting, runtime.GOARCH) }
 func source() string     { return parseChangelog("Source") }
 func version() string    { return parseChangelog("Version") }
 func sources() []string  { return splitenv(sourcesSetting) }
