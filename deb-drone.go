@@ -26,6 +26,12 @@ func main() {
 	os.Setenv("DEBIAN_FRONTEND", "noninteractive")
 	buildDeps := fmt.Sprintf("%s-build-deps_%s_all.deb", s.source, s.version)
 	run("mk-build-deps", filepath.Join(s.dir, "control"))
+	for _, key := range s.recvKeys {
+		run("apt-key", "adv", "--keyserver", s.keyserver, "--recv", key)
+	}
+	for _, source := range s.sources {
+		run("apt-add-repository", source)
+	}
 	run("apt-get", "update")
 	run(
 		"apt-get", "install", "-y", "--no-install-recommends",

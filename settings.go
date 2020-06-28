@@ -16,12 +16,18 @@ type settings struct {
 	dir           string
 	archive       string
 	arch          string
+	sources       []string
+	keyserver     string
+	recvKeys      []string
 }
 
 const (
-	dirSetting     = "PLUGIN_DIR"
-	archiveSetting = "PLUGIN_ARCHIVE"
-	archSetting    = "PLUGIN_ARCH"
+	dirSetting       = "PLUGIN_DIR"
+	archiveSetting   = "PLUGIN_ARCHIVE"
+	archSetting      = "PLUGIN_ARCH"
+	sourcesSetting   = "PLUGIN_SOURCES"
+	keyserverSetting = "PLUGIN_KEYSERVER"
+	recvKeysSetting  = "PLUGIN_RECV_KEYS"
 )
 
 func loadSettings() settings {
@@ -32,14 +38,20 @@ func loadSettings() settings {
 		dir:           dir(),
 		archive:       archive(),
 		arch:          arch(),
+		sources:       sources(),
+		keyserver:     keyserver(),
+		recvKeys:      recvKeys(),
 	}
 }
 
-func dir() string     { return getenv(dirSetting, "debian") }
-func archive() string { return getenv(archiveSetting, "dist/*") }
-func arch() string    { return getenv(archSetting, runtime.GOARCH) }
-func source() string  { return parseChangelog("Source") }
-func version() string { return parseChangelog("Version") }
+func dir() string        { return getenv(dirSetting, "debian") }
+func archive() string    { return getenv(archiveSetting, "dist/*") }
+func arch() string       { return getenv(archSetting, runtime.GOARCH) }
+func source() string     { return parseChangelog("Source") }
+func version() string    { return parseChangelog("Version") }
+func sources() []string  { return splitenv(sourcesSetting) }
+func keyserver() string  { return getenv(keyserverSetting, "keyserver.ubuntu.com") }
+func recvKeys() []string { return splitenv(recvKeysSetting) }
 
 func sourceVersion() string {
 	v := version()
@@ -52,10 +64,19 @@ func sourceVersion() string {
 }
 
 func getenv(key, def string) string {
-	if s := os.Getenv(key); s != "" {
-		return s
+	s := os.Getenv(key)
+	if s == "" {
+		return def
 	}
-	return def
+	return s
+}
+
+func splitenv(key string) []string {
+	s := os.Getenv(key)
+	if s == "" {
+		return nil
+	}
+	return strings.Split(s, ",")
 }
 
 func parseChangelog(setting string) string {

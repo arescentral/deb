@@ -20,7 +20,7 @@ RUN chroot /var/chroot /debootstrap/debootstrap --second-stage
 RUN chroot /var/chroot apt-get update
 RUN chroot /var/chroot apt-get upgrade --no-install-recommends
 RUN chroot /var/chroot apt-get install --no-install-recommends -y \
-    build-essential devscripts equivs lintian
+    build-essential devscripts equivs lintian software-properties-common
 RUN chroot /var/chroot apt-get autoremove --purge
 RUN chroot /var/chroot apt-get clean
 
