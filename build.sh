@@ -16,7 +16,14 @@ VERSION=1.0.0
 DISTRIBUTION=$1
 CODENAME=$2
 
-docker build \
+case $DISTRIBUTION in
+    ubuntu) PLATFORMS=linux/amd64 ;;
+    debian) PLATFORMS=linux/amd64,linux/arm/v7
+esac
+
+docker buildx build \
+    --push \
+    --platform $PLATFORMS \
     --build-arg BASE="$DISTRIBUTION:$CODENAME" \
     --build-arg DISTRIBUTION="$DISTRIBUTION" \
     --build-arg BUILDDATE="$BUILD_DATE" \
