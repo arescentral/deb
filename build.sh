@@ -3,32 +3,42 @@
 set -o errexit
 set -o nounset
 
-if [[ $# != 2 ]]; then
-    echo >&2 "usage: ./build.sh debian CODENAME"
-    echo >&2 "                  ubuntu CODENAME"
+if [[ $# != 1 ]]; then
+    echo >&2 "usage: ./build.sh CODENAME"
+    echo >&2 "                  CODENAME"
     exit 64
 fi
 
+CODENAME=$1
+
 TITLE=arescentral/deb
+
 BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-VERSION=1.0.0
+REVISION=1
 
-DISTRIBUTION=$1
-CODENAME=$2
+case $CODENAME in
+    bullseye|buster|stretch|jessie)
+        DIST=debian VERSION=$CODENAME-20200607 ;;
+    focal) DIST=ubuntu VERSION=$CODENAME-20200606 ;;
+    bionic) DIST=ubuntu VERSION=$CODENAME-20200526 ;;
+    xenial) DIST=ubuntu VERSION=$CODENAME-20200514 ;;
+    trusty) DIST=ubuntu VERSION=$CODENAME-20201217 ;;
+    *) echo >&2 "$CODENAME: unknown codename"; exit 1 ;;
+esac
 
-case $DISTRIBUTION in
-    ubuntu) PLATFORMS=linux/amd64 ;;
-    debian) PLATFORMS=linux/amd64,linux/arm/v7
+case $DIST in
+    debian) BASE=debian:$VERSION-slim PLATFORMS=linux/amd64,linux/arm/v7,linux/arm64 ;;
+    ubuntu) BASE=ubuntu:$VERSION PLATFORMS=linux/amd64 ;;
 esac
 
 docker buildx build \
     --push \
     --platform $PLATFORMS \
-    --build-arg BASE="$DISTRIBUTION:$CODENAME" \
-    --build-arg DISTRIBUTION="$DISTRIBUTION" \
+    --build-arg BASE="$BASE" \
     --build-arg BUILDDATE="$BUILD_DATE" \
-    --build-arg VERSION="$VERSION" \
+    --build-arg VERSION="$VERSION-$REVISION" \
     --build-arg TITLE="$TITLE" \
-    -t "$TITLE:$CODENAME" \
-    -t "$TITLE:$CODENAME-$VERSION" \
+    --tag "$TITLE:$CODENAME" \
+    --tag "$TITLE:$VERSION" \
+    --tag "$TITLE:$VERSION-$REVISION" \
     .

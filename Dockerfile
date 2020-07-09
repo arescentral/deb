@@ -26,7 +26,6 @@ COPY --from=go /src/deb-drone /usr/local/bin/deb-drone
 
 ARG BUILDDATE
 ARG VERSION
-ARG DISTRIBUTION
 ARG TITLE
 LABEL maintainer="sfiera@twotaled.com"
 LABEL org.opencontainers.image.created=$BUILDDATE

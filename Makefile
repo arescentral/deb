@@ -1,18 +1,10 @@
-DEBIAN=sid \
-       bullseye \
-       buster \
-       stretch \
-       jessie
-
-UBUNTU=focal \
-       bionic \
-       xenial \
-       trusty
+DEBIAN=bullseye buster stretch
+UBUNTU=focal bionic xenial trusty
 
 all: $(DEBIAN) $(UBUNTU)
 .PHONY: $(DEBIAN) $(UBUNTU)
 
 $(UBUNTU): %:
-	./build.sh ubuntu $@
+	./build.sh $@
 $(DEBIAN): %:
-	./build.sh debian $@
+	./build.sh $@
