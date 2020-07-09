@@ -31,14 +31,26 @@ case $DIST in
     ubuntu) BASE=ubuntu:$VERSION PLATFORMS=linux/amd64 ;;
 esac
 
-docker buildx build \
-    --push \
-    --platform $PLATFORMS \
-    --build-arg BASE="$BASE" \
-    --build-arg BUILDDATE="$BUILD_DATE" \
-    --build-arg VERSION="$VERSION-$REVISION" \
-    --build-arg TITLE="$TITLE" \
-    --tag "$TITLE:$CODENAME" \
-    --tag "$TITLE:$VERSION" \
-    --tag "$TITLE:$VERSION-$REVISION" \
-    .
+if [[ "$LOCAL" != "" ]]; then
+    docker build \
+        --build-arg BASE="$BASE" \
+        --build-arg BUILDDATE="$BUILD_DATE" \
+        --build-arg VERSION="$VERSION-$REVISION" \
+        --build-arg TITLE="$TITLE" \
+        --tag "$TITLE:$CODENAME" \
+        --tag "$TITLE:$VERSION" \
+        --tag "$TITLE:$VERSION-$REVISION" \
+        .
+else
+    docker buildx build \
+        --push \
+        --platform $PLATFORMS \
+        --build-arg BASE="$BASE" \
+        --build-arg BUILDDATE="$BUILD_DATE" \
+        --build-arg VERSION="$VERSION-$REVISION" \
+        --build-arg TITLE="$TITLE" \
+        --tag "$TITLE:$CODENAME" \
+        --tag "$TITLE:$VERSION" \
+        --tag "$TITLE:$VERSION-$REVISION" \
+        .
+fi
