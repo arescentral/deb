@@ -15,6 +15,7 @@ FROM $BASE
 
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        apt-transport-https \
         build-essential \
         devscripts \
         equivs \
