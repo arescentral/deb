@@ -14,7 +14,7 @@ CODENAME=$1
 TITLE=arescentral/deb
 
 BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-REVISION=1
+REVISION=2
 
 case $CODENAME in
     bullseye|buster|stretch|jessie)

@@ -30,7 +30,7 @@ func main() {
 		run("apt-key", "adv", "--keyserver", s.keyserver, "--recv", key)
 	}
 	for _, source := range s.sources {
-		run("apt-add-repository", source)
+		appendTo("/etc/apt/sources.list.d/deb-drone.list", source)
 	}
 	run("apt-get", "update")
 	run(
@@ -66,6 +66,23 @@ func runIn(dir, name string, args ...string) {
 	cd(dir)
 	defer cd(origDir)
 	run(name, args...)
+}
+
+func appendTo(path, text string) {
+	fmt.Printf("APPEND %s %q\n", path, text)
+
+	w, err := os.OpenFile(path, os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "open %s: %s\n", path, err)
+		os.Exit(1)
+	}
+	defer closeOrDie(path, w)
+
+	_, err = w.Write([]byte(text))
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "write %s: %s\n", path, err)
+		os.Exit(1)
+	}
 }
 
 func cd(dir string) {

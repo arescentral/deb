@@ -19,7 +19,6 @@ RUN apt-get update \
         devscripts \
         equivs \
         lintian \
-        software-properties-common \
  && rm -rf /var/lib/apt/lists/*
 
 COPY --from=go /src/deb-drone /usr/local/bin/deb-drone
