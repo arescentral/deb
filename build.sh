@@ -27,30 +27,18 @@ case $CODENAME in
 esac
 
 case $DIST in
-    debian) BASE=debian:$VERSION-slim ARCHES="amd64 armv7 arm64" ;;
-    ubuntu) BASE=ubuntu:$VERSION ARCHES=amd64 ;;
+    debian) BASE=debian:$VERSION-slim PLATFORMS=linux/amd64,linux/arm/v7,linux/arm64 ;;
+    ubuntu) BASE=ubuntu:$VERSION PLATFORMS=linux/amd64 ;;
 esac
 
-function + {
-    echo "$@"
-    "$@"
-}
-
-MANIFESTS=""
-for ARCH in $ARCHES; do
-    TAG="$VERSION-$REVISION-$ARCH"
-    + docker build \
-        --platform linux/$ARCH \
-        --build-arg BASE="$BASE" \
-        --build-arg BUILDDATE="$BUILD_DATE" \
-        --build-arg VERSION="$VERSION-$REVISION" \
-        --build-arg TITLE="$TITLE" \
-        --tag "$TITLE:$TAG" \
-        .
-    + docker push "$TITLE:$TAG"
-    MANIFESTS="$MANIFESTS $TITLE:$TAG"
-done
-for TAG in $CODENAME $VERSION $VERSION-$REVISION; do
-    + docker manifest create --amend "$TITLE:$TAG" $MANIFESTS
-    + docker manifest push "$TITLE:$TAG"
-done
+docker buildx build \
+    --push \
+    --platform $PLATFORMS \
+    --build-arg BASE="$BASE" \
+    --build-arg BUILDDATE="$BUILD_DATE" \
+    --build-arg VERSION="$VERSION-$REVISION" \
+    --build-arg TITLE="$TITLE" \
+    --tag "$TITLE:$CODENAME" \
+    --tag "$TITLE:$VERSION" \
+    --tag "$TITLE:$VERSION-$REVISION" \
+    .
