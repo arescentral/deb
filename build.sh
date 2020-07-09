@@ -31,7 +31,7 @@ case $DIST in
     ubuntu) BASE=ubuntu:$VERSION PLATFORMS=linux/amd64 ;;
 esac
 
-if [[ "$LOCAL" != "" ]]; then
+if [[ "${LOCAL-}" != "" ]]; then
     docker build \
         --build-arg BASE="$BASE" \
         --build-arg BUILDDATE="$BUILD_DATE" \
