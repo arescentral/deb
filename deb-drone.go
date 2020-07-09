@@ -71,16 +71,16 @@ func runIn(dir, name string, args ...string) {
 func appendTo(path, text string) {
 	fmt.Printf("APPEND %s %q\n", path, text)
 
-	w, err := os.OpenFile(path, os.O_CREATE|os.O_APPEND, 0644)
+	w, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "open %s: %s\n", path, err)
 		os.Exit(1)
 	}
 	defer closeOrDie(path, w)
 
-	_, err = w.Write([]byte(text))
+	_, err = fmt.Fprintln(w, text)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "write %s: %s\n", path, err)
+		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(1)
 	}
 }
