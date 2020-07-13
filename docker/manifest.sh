@@ -11,12 +11,12 @@ if [[ -n "${DRONE_TAG-}" ]]; then
     SOURCE_TAG="$XYZ-$DATE"
     FIRST_TAG=latest
     OTHER_TAGS="tags:
-  - $XYZ,
-  - $XY,
-  - $X,
-  - latest-$DATE,
-  - $XYZ-$DATE,
-  - $XY-$DATE,
+  - $XYZ
+  - $XY
+  - $X
+  - latest-$DATE
+  - $XYZ-$DATE
+  - $XY-$DATE
   - $X-$DATE"
 else
     SOURCE_TAG="HEAD-$DATE"
