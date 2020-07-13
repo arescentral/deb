@@ -12,6 +12,15 @@ import (
 )
 
 func main() {
+	run("apt-get", "update")
+	run("apt-get", "install",
+		"apt-transport-https",
+		"build-essential",
+		"devscripts",
+		"equivs",
+		"lintian",
+	)
+
 	s := loadSettings()
 	archive := globSingle(s.archive)
 

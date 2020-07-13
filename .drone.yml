@@ -1,0 +1,817 @@
+---
+kind: pipeline
+type: docker
+name: debian/amd64
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: bullseye/tags
+  image: alpine
+  commands:
+  - env | sort
+  - "if [[ -n \"$DRONE_TAG\" ]]; then\n  XYZ=$${DRONE_TAG#v}\n  XY=$${XYZ%.*}\n  X=$${XY%.*}\n  tee .tags <<EOF\nlatest-amd64,\n$XYZ-amd64,\n$XY-amd64,\n$X-amd64,\nlatest-20200607-amd64,\n$XYZ-20200607-amd64,\n$XY-20200607-amd64,\n$X-20200607-amd64\nEOF\nelse\n  tee .tags <<EOF\nHEAD-amd64,\nHEAD-20200607-amd64\nEOF\nfi\n"
+
+- name: bullseye/dryrun
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:bullseye-20200607-slim
+    dockerfile: docker/Dockerfile
+    dry_run: true
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-bullseye
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+      exclude:
+      - refs/heads/master
+      - refs/tags/*
+
+- name: bullseye/image
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:bullseye-20200607-slim
+    dockerfile: docker/Dockerfile
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-bullseye
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+    - refs/heads/master
+    - refs/tags/*
+
+- name: buster/tags
+  image: alpine
+  commands:
+  - env | sort
+  - "if [[ -n \"$DRONE_TAG\" ]]; then\n  XYZ=$${DRONE_TAG#v}\n  XY=$${XYZ%.*}\n  X=$${XY%.*}\n  tee .tags <<EOF\nlatest-amd64,\n$XYZ-amd64,\n$XY-amd64,\n$X-amd64,\nlatest-20200607-amd64,\n$XYZ-20200607-amd64,\n$XY-20200607-amd64,\n$X-20200607-amd64\nEOF\nelse\n  tee .tags <<EOF\nHEAD-amd64,\nHEAD-20200607-amd64\nEOF\nfi\n"
+
+- name: buster/dryrun
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:buster-20200607-slim
+    dockerfile: docker/Dockerfile
+    dry_run: true
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-buster
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+      exclude:
+      - refs/heads/master
+      - refs/tags/*
+
+- name: buster/image
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:buster-20200607-slim
+    dockerfile: docker/Dockerfile
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-buster
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+    - refs/heads/master
+    - refs/tags/*
+
+- name: stretch/tags
+  image: alpine
+  commands:
+  - env | sort
+  - "if [[ -n \"$DRONE_TAG\" ]]; then\n  XYZ=$${DRONE_TAG#v}\n  XY=$${XYZ%.*}\n  X=$${XY%.*}\n  tee .tags <<EOF\nlatest-amd64,\n$XYZ-amd64,\n$XY-amd64,\n$X-amd64,\nlatest-20200607-amd64,\n$XYZ-20200607-amd64,\n$XY-20200607-amd64,\n$X-20200607-amd64\nEOF\nelse\n  tee .tags <<EOF\nHEAD-amd64,\nHEAD-20200607-amd64\nEOF\nfi\n"
+
+- name: stretch/dryrun
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:stretch-20200607-slim
+    dockerfile: docker/Dockerfile
+    dry_run: true
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-stretch
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+      exclude:
+      - refs/heads/master
+      - refs/tags/*
+
+- name: stretch/image
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:stretch-20200607-slim
+    dockerfile: docker/Dockerfile
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-stretch
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+    - refs/heads/master
+    - refs/tags/*
+
+- name: jessie/tags
+  image: alpine
+  commands:
+  - env | sort
+  - "if [[ -n \"$DRONE_TAG\" ]]; then\n  XYZ=$${DRONE_TAG#v}\n  XY=$${XYZ%.*}\n  X=$${XY%.*}\n  tee .tags <<EOF\nlatest-amd64,\n$XYZ-amd64,\n$XY-amd64,\n$X-amd64,\nlatest-20200607-amd64,\n$XYZ-20200607-amd64,\n$XY-20200607-amd64,\n$X-20200607-amd64\nEOF\nelse\n  tee .tags <<EOF\nHEAD-amd64,\nHEAD-20200607-amd64\nEOF\nfi\n"
+
+- name: jessie/dryrun
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:jessie-20200607-slim
+    dockerfile: docker/Dockerfile
+    dry_run: true
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-jessie
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+      exclude:
+      - refs/heads/master
+      - refs/tags/*
+
+- name: jessie/image
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:jessie-20200607-slim
+    dockerfile: docker/Dockerfile
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-jessie
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+    - refs/heads/master
+    - refs/tags/*
+
+---
+kind: pipeline
+type: docker
+name: debian/arm64
+
+platform:
+  os: linux
+  arch: arm64
+
+steps:
+- name: bullseye/tags
+  image: alpine
+  commands:
+  - env | sort
+  - "if [[ -n \"$DRONE_TAG\" ]]; then\n  XYZ=$${DRONE_TAG#v}\n  XY=$${XYZ%.*}\n  X=$${XY%.*}\n  tee .tags <<EOF\nlatest-arm64,\n$XYZ-arm64,\n$XY-arm64,\n$X-arm64,\nlatest-20200607-arm64,\n$XYZ-20200607-arm64,\n$XY-20200607-arm64,\n$X-20200607-arm64\nEOF\nelse\n  tee .tags <<EOF\nHEAD-arm64,\nHEAD-20200607-arm64\nEOF\nfi\n"
+
+- name: bullseye/dryrun
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:bullseye-20200607-slim
+    dockerfile: docker/Dockerfile
+    dry_run: true
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-bullseye
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+      exclude:
+      - refs/heads/master
+      - refs/tags/*
+
+- name: bullseye/image
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:bullseye-20200607-slim
+    dockerfile: docker/Dockerfile
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-bullseye
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+    - refs/heads/master
+    - refs/tags/*
+
+- name: buster/tags
+  image: alpine
+  commands:
+  - env | sort
+  - "if [[ -n \"$DRONE_TAG\" ]]; then\n  XYZ=$${DRONE_TAG#v}\n  XY=$${XYZ%.*}\n  X=$${XY%.*}\n  tee .tags <<EOF\nlatest-arm64,\n$XYZ-arm64,\n$XY-arm64,\n$X-arm64,\nlatest-20200607-arm64,\n$XYZ-20200607-arm64,\n$XY-20200607-arm64,\n$X-20200607-arm64\nEOF\nelse\n  tee .tags <<EOF\nHEAD-arm64,\nHEAD-20200607-arm64\nEOF\nfi\n"
+
+- name: buster/dryrun
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:buster-20200607-slim
+    dockerfile: docker/Dockerfile
+    dry_run: true
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-buster
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+      exclude:
+      - refs/heads/master
+      - refs/tags/*
+
+- name: buster/image
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:buster-20200607-slim
+    dockerfile: docker/Dockerfile
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-buster
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+    - refs/heads/master
+    - refs/tags/*
+
+- name: stretch/tags
+  image: alpine
+  commands:
+  - env | sort
+  - "if [[ -n \"$DRONE_TAG\" ]]; then\n  XYZ=$${DRONE_TAG#v}\n  XY=$${XYZ%.*}\n  X=$${XY%.*}\n  tee .tags <<EOF\nlatest-arm64,\n$XYZ-arm64,\n$XY-arm64,\n$X-arm64,\nlatest-20200607-arm64,\n$XYZ-20200607-arm64,\n$XY-20200607-arm64,\n$X-20200607-arm64\nEOF\nelse\n  tee .tags <<EOF\nHEAD-arm64,\nHEAD-20200607-arm64\nEOF\nfi\n"
+
+- name: stretch/dryrun
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:stretch-20200607-slim
+    dockerfile: docker/Dockerfile
+    dry_run: true
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-stretch
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+      exclude:
+      - refs/heads/master
+      - refs/tags/*
+
+- name: stretch/image
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:stretch-20200607-slim
+    dockerfile: docker/Dockerfile
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-stretch
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+    - refs/heads/master
+    - refs/tags/*
+
+- name: jessie/tags
+  image: alpine
+  commands:
+  - env | sort
+  - "if [[ -n \"$DRONE_TAG\" ]]; then\n  XYZ=$${DRONE_TAG#v}\n  XY=$${XYZ%.*}\n  X=$${XY%.*}\n  tee .tags <<EOF\nlatest-arm64,\n$XYZ-arm64,\n$XY-arm64,\n$X-arm64,\nlatest-20200607-arm64,\n$XYZ-20200607-arm64,\n$XY-20200607-arm64,\n$X-20200607-arm64\nEOF\nelse\n  tee .tags <<EOF\nHEAD-arm64,\nHEAD-20200607-arm64\nEOF\nfi\n"
+
+- name: jessie/dryrun
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:jessie-20200607-slim
+    dockerfile: docker/Dockerfile
+    dry_run: true
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-jessie
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+      exclude:
+      - refs/heads/master
+      - refs/tags/*
+
+- name: jessie/image
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:jessie-20200607-slim
+    dockerfile: docker/Dockerfile
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-jessie
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+    - refs/heads/master
+    - refs/tags/*
+
+---
+kind: pipeline
+type: docker
+name: debian/arm
+
+platform:
+  os: linux
+  arch: arm
+
+steps:
+- name: bullseye/tags
+  image: alpine
+  commands:
+  - env | sort
+  - "if [[ -n \"$DRONE_TAG\" ]]; then\n  XYZ=$${DRONE_TAG#v}\n  XY=$${XYZ%.*}\n  X=$${XY%.*}\n  tee .tags <<EOF\nlatest-arm,\n$XYZ-arm,\n$XY-arm,\n$X-arm,\nlatest-20200607-arm,\n$XYZ-20200607-arm,\n$XY-20200607-arm,\n$X-20200607-arm\nEOF\nelse\n  tee .tags <<EOF\nHEAD-arm,\nHEAD-20200607-arm\nEOF\nfi\n"
+
+- name: bullseye/dryrun
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:bullseye-20200607-slim
+    dockerfile: docker/Dockerfile
+    dry_run: true
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-bullseye
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+      exclude:
+      - refs/heads/master
+      - refs/tags/*
+
+- name: bullseye/image
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:bullseye-20200607-slim
+    dockerfile: docker/Dockerfile
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-bullseye
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+    - refs/heads/master
+    - refs/tags/*
+
+- name: buster/tags
+  image: alpine
+  commands:
+  - env | sort
+  - "if [[ -n \"$DRONE_TAG\" ]]; then\n  XYZ=$${DRONE_TAG#v}\n  XY=$${XYZ%.*}\n  X=$${XY%.*}\n  tee .tags <<EOF\nlatest-arm,\n$XYZ-arm,\n$XY-arm,\n$X-arm,\nlatest-20200607-arm,\n$XYZ-20200607-arm,\n$XY-20200607-arm,\n$X-20200607-arm\nEOF\nelse\n  tee .tags <<EOF\nHEAD-arm,\nHEAD-20200607-arm\nEOF\nfi\n"
+
+- name: buster/dryrun
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:buster-20200607-slim
+    dockerfile: docker/Dockerfile
+    dry_run: true
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-buster
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+      exclude:
+      - refs/heads/master
+      - refs/tags/*
+
+- name: buster/image
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:buster-20200607-slim
+    dockerfile: docker/Dockerfile
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-buster
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+    - refs/heads/master
+    - refs/tags/*
+
+- name: stretch/tags
+  image: alpine
+  commands:
+  - env | sort
+  - "if [[ -n \"$DRONE_TAG\" ]]; then\n  XYZ=$${DRONE_TAG#v}\n  XY=$${XYZ%.*}\n  X=$${XY%.*}\n  tee .tags <<EOF\nlatest-arm,\n$XYZ-arm,\n$XY-arm,\n$X-arm,\nlatest-20200607-arm,\n$XYZ-20200607-arm,\n$XY-20200607-arm,\n$X-20200607-arm\nEOF\nelse\n  tee .tags <<EOF\nHEAD-arm,\nHEAD-20200607-arm\nEOF\nfi\n"
+
+- name: stretch/dryrun
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:stretch-20200607-slim
+    dockerfile: docker/Dockerfile
+    dry_run: true
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-stretch
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+      exclude:
+      - refs/heads/master
+      - refs/tags/*
+
+- name: stretch/image
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:stretch-20200607-slim
+    dockerfile: docker/Dockerfile
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-stretch
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+    - refs/heads/master
+    - refs/tags/*
+
+- name: jessie/tags
+  image: alpine
+  commands:
+  - env | sort
+  - "if [[ -n \"$DRONE_TAG\" ]]; then\n  XYZ=$${DRONE_TAG#v}\n  XY=$${XYZ%.*}\n  X=$${XY%.*}\n  tee .tags <<EOF\nlatest-arm,\n$XYZ-arm,\n$XY-arm,\n$X-arm,\nlatest-20200607-arm,\n$XYZ-20200607-arm,\n$XY-20200607-arm,\n$X-20200607-arm\nEOF\nelse\n  tee .tags <<EOF\nHEAD-arm,\nHEAD-20200607-arm\nEOF\nfi\n"
+
+- name: jessie/dryrun
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:jessie-20200607-slim
+    dockerfile: docker/Dockerfile
+    dry_run: true
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-jessie
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+      exclude:
+      - refs/heads/master
+      - refs/tags/*
+
+- name: jessie/image
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=debian:jessie-20200607-slim
+    dockerfile: docker/Dockerfile
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-jessie
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+    - refs/heads/master
+    - refs/tags/*
+
+---
+kind: pipeline
+type: docker
+name: ubuntu/amd64
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: focal/tags
+  image: alpine
+  commands:
+  - env | sort
+  - "if [[ -n \"$DRONE_TAG\" ]]; then\n  XYZ=$${DRONE_TAG#v}\n  XY=$${XYZ%.*}\n  X=$${XY%.*}\n  tee .tags <<EOF\nlatest-amd64,\n$XYZ-amd64,\n$XY-amd64,\n$X-amd64,\nlatest-20200606-amd64,\n$XYZ-20200606-amd64,\n$XY-20200606-amd64,\n$X-20200606-amd64\nEOF\nelse\n  tee .tags <<EOF\nHEAD-amd64,\nHEAD-20200606-amd64\nEOF\nfi\n"
+
+- name: focal/dryrun
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=ubuntu:focal-20200606
+    dockerfile: docker/Dockerfile
+    dry_run: true
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-focal
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+      exclude:
+      - refs/heads/master
+      - refs/tags/*
+
+- name: focal/image
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=ubuntu:focal-20200606
+    dockerfile: docker/Dockerfile
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-focal
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+    - refs/heads/master
+    - refs/tags/*
+
+- name: bionic/tags
+  image: alpine
+  commands:
+  - env | sort
+  - "if [[ -n \"$DRONE_TAG\" ]]; then\n  XYZ=$${DRONE_TAG#v}\n  XY=$${XYZ%.*}\n  X=$${XY%.*}\n  tee .tags <<EOF\nlatest-amd64,\n$XYZ-amd64,\n$XY-amd64,\n$X-amd64,\nlatest-20200526-amd64,\n$XYZ-20200526-amd64,\n$XY-20200526-amd64,\n$X-20200526-amd64\nEOF\nelse\n  tee .tags <<EOF\nHEAD-amd64,\nHEAD-20200526-amd64\nEOF\nfi\n"
+
+- name: bionic/dryrun
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=ubuntu:bionic-20200526
+    dockerfile: docker/Dockerfile
+    dry_run: true
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-bionic
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+      exclude:
+      - refs/heads/master
+      - refs/tags/*
+
+- name: bionic/image
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=ubuntu:bionic-20200526
+    dockerfile: docker/Dockerfile
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-bionic
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+    - refs/heads/master
+    - refs/tags/*
+
+- name: xenial/tags
+  image: alpine
+  commands:
+  - env | sort
+  - "if [[ -n \"$DRONE_TAG\" ]]; then\n  XYZ=$${DRONE_TAG#v}\n  XY=$${XYZ%.*}\n  X=$${XY%.*}\n  tee .tags <<EOF\nlatest-amd64,\n$XYZ-amd64,\n$XY-amd64,\n$X-amd64,\nlatest-20200514-amd64,\n$XYZ-20200514-amd64,\n$XY-20200514-amd64,\n$X-20200514-amd64\nEOF\nelse\n  tee .tags <<EOF\nHEAD-amd64,\nHEAD-20200514-amd64\nEOF\nfi\n"
+
+- name: xenial/dryrun
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=ubuntu:xenial-20200514
+    dockerfile: docker/Dockerfile
+    dry_run: true
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-xenial
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+      exclude:
+      - refs/heads/master
+      - refs/tags/*
+
+- name: xenial/image
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=ubuntu:xenial-20200514
+    dockerfile: docker/Dockerfile
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-xenial
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+    - refs/heads/master
+    - refs/tags/*
+
+- name: trusty/tags
+  image: alpine
+  commands:
+  - env | sort
+  - "if [[ -n \"$DRONE_TAG\" ]]; then\n  XYZ=$${DRONE_TAG#v}\n  XY=$${XYZ%.*}\n  X=$${XY%.*}\n  tee .tags <<EOF\nlatest-amd64,\n$XYZ-amd64,\n$XY-amd64,\n$X-amd64,\nlatest-20201217-amd64,\n$XYZ-20201217-amd64,\n$XY-20201217-amd64,\n$X-20201217-amd64\nEOF\nelse\n  tee .tags <<EOF\nHEAD-amd64,\nHEAD-20201217-amd64\nEOF\nfi\n"
+
+- name: trusty/dryrun
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=ubuntu:trusty-20201217
+    dockerfile: docker/Dockerfile
+    dry_run: true
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-trusty
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+      exclude:
+      - refs/heads/master
+      - refs/tags/*
+
+- name: trusty/image
+  image: plugins/docker
+  settings:
+    build_args:
+    - BASE=ubuntu:trusty-20201217
+    dockerfile: docker/Dockerfile
+    password:
+      from_secret: docker_password
+    repo: arescentral/deb-trusty
+    username:
+      from_secret: docker_username
+  when:
+    ref:
+    - refs/heads/master
+    - refs/tags/*
+
+---
+kind: pipeline
+type: docker
+name: default
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: bullseye
+  image: plugins/manifest
+  settings:
+    ignore_missing: true
+    password:
+      from_secret: docker_password
+    spec: .manifest.tmpl
+    tags:
+    - bullseye
+    - bullseye-20200607
+    - bullseye-2
+    - bullseye-20200607-2
+    username:
+      from_secret: docker_username
+
+- name: buster
+  image: plugins/manifest
+  settings:
+    ignore_missing: true
+    password:
+      from_secret: docker_password
+    spec: .manifest.tmpl
+    tags:
+    - buster
+    - buster-20200607
+    - buster-2
+    - buster-20200607-2
+    username:
+      from_secret: docker_username
+
+- name: stretch
+  image: plugins/manifest
+  settings:
+    ignore_missing: true
+    password:
+      from_secret: docker_password
+    spec: .manifest.tmpl
+    tags:
+    - stretch
+    - stretch-20200607
+    - stretch-2
+    - stretch-20200607-2
+    username:
+      from_secret: docker_username
+
+- name: jessie
+  image: plugins/manifest
+  settings:
+    ignore_missing: true
+    password:
+      from_secret: docker_password
+    spec: .manifest.tmpl
+    tags:
+    - jessie
+    - jessie-20200607
+    - jessie-2
+    - jessie-20200607-2
+    username:
+      from_secret: docker_username
+
+- name: focal
+  image: plugins/manifest
+  settings:
+    ignore_missing: true
+    password:
+      from_secret: docker_password
+    spec: .manifest.tmpl
+    tags:
+    - focal
+    - focal-20200606
+    - focal-2
+    - focal-20200606-2
+    username:
+      from_secret: docker_username
+
+- name: bionic
+  image: plugins/manifest
+  settings:
+    ignore_missing: true
+    password:
+      from_secret: docker_password
+    spec: .manifest.tmpl
+    tags:
+    - bionic
+    - bionic-20200526
+    - bionic-2
+    - bionic-20200526-2
+    username:
+      from_secret: docker_username
+
+- name: xenial
+  image: plugins/manifest
+  settings:
+    ignore_missing: true
+    password:
+      from_secret: docker_password
+    spec: .manifest.tmpl
+    tags:
+    - xenial
+    - xenial-20200514
+    - xenial-2
+    - xenial-20200514-2
+    username:
+      from_secret: docker_username
+
+- name: trusty
+  image: plugins/manifest
+  settings:
+    ignore_missing: true
+    password:
+      from_secret: docker_password
+    spec: .manifest.tmpl
+    tags:
+    - trusty
+    - trusty-20201217
+    - trusty-2
+    - trusty-20201217-2
+    username:
+      from_secret: docker_username
+
+depends_on:
+- debian/amd64
+- debian/arm64
+- debian/arm
+- ubuntu/amd64
+
+...
