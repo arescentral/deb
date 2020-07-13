@@ -51,7 +51,7 @@ local image(config, arch, dryRun) = {
 local tagged_image(config, arch) = [
   {
     name: '%s/tags' % config.codename,
-    image: 'alpine',
+    image: 'bash',
     environment: {
       DATE: config.date,
       ARCH: arch,
@@ -67,7 +67,7 @@ local tagged_image(config, arch) = [
 
 local manifest(config) = [{
   name: '%s/template' % config.codename,
-  image: 'alpine',
+  image: 'bash',
   environment: {
     CODENAME: config.codename,
     DATE: config.date,

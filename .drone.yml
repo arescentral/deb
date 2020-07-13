@@ -9,7 +9,7 @@ platform:
 
 steps:
 - name: bullseye/tags
-  image: alpine
+  image: bash
   commands:
   - env | sort
   - docker/tags.sh .tags
@@ -52,7 +52,7 @@ steps:
     - refs/tags/*
 
 - name: buster/tags
-  image: alpine
+  image: bash
   commands:
   - env | sort
   - docker/tags.sh .tags
@@ -95,7 +95,7 @@ steps:
     - refs/tags/*
 
 - name: stretch/tags
-  image: alpine
+  image: bash
   commands:
   - env | sort
   - docker/tags.sh .tags
@@ -148,7 +148,7 @@ platform:
 
 steps:
 - name: bullseye/tags
-  image: alpine
+  image: bash
   commands:
   - env | sort
   - docker/tags.sh .tags
@@ -191,7 +191,7 @@ steps:
     - refs/tags/*
 
 - name: buster/tags
-  image: alpine
+  image: bash
   commands:
   - env | sort
   - docker/tags.sh .tags
@@ -234,7 +234,7 @@ steps:
     - refs/tags/*
 
 - name: stretch/tags
-  image: alpine
+  image: bash
   commands:
   - env | sort
   - docker/tags.sh .tags
@@ -287,7 +287,7 @@ platform:
 
 steps:
 - name: bullseye/tags
-  image: alpine
+  image: bash
   commands:
   - env | sort
   - docker/tags.sh .tags
@@ -330,7 +330,7 @@ steps:
     - refs/tags/*
 
 - name: buster/tags
-  image: alpine
+  image: bash
   commands:
   - env | sort
   - docker/tags.sh .tags
@@ -373,7 +373,7 @@ steps:
     - refs/tags/*
 
 - name: stretch/tags
-  image: alpine
+  image: bash
   commands:
   - env | sort
   - docker/tags.sh .tags
@@ -426,7 +426,7 @@ platform:
 
 steps:
 - name: focal/tags
-  image: alpine
+  image: bash
   commands:
   - env | sort
   - docker/tags.sh .tags
@@ -469,7 +469,7 @@ steps:
     - refs/tags/*
 
 - name: bionic/tags
-  image: alpine
+  image: bash
   commands:
   - env | sort
   - docker/tags.sh .tags
@@ -512,7 +512,7 @@ steps:
     - refs/tags/*
 
 - name: xenial/tags
-  image: alpine
+  image: bash
   commands:
   - env | sort
   - docker/tags.sh .tags
@@ -555,7 +555,7 @@ steps:
     - refs/tags/*
 
 - name: trusty/tags
-  image: alpine
+  image: bash
   commands:
   - env | sort
   - docker/tags.sh .tags
@@ -608,7 +608,7 @@ platform:
 
 steps:
 - name: bullseye/template
-  image: alpine
+  image: bash
   commands:
   - docker/manifest.sh .manifest.tmpl
   environment:
@@ -626,7 +626,7 @@ steps:
       from_secret: docker_username
 
 - name: buster/template
-  image: alpine
+  image: bash
   commands:
   - docker/manifest.sh .manifest.tmpl
   environment:
@@ -644,7 +644,7 @@ steps:
       from_secret: docker_username
 
 - name: stretch/template
-  image: alpine
+  image: bash
   commands:
   - docker/manifest.sh .manifest.tmpl
   environment:
@@ -662,7 +662,7 @@ steps:
       from_secret: docker_username
 
 - name: focal/template
-  image: alpine
+  image: bash
   commands:
   - docker/manifest.sh .manifest.tmpl
   environment:
@@ -680,7 +680,7 @@ steps:
       from_secret: docker_username
 
 - name: bionic/template
-  image: alpine
+  image: bash
   commands:
   - docker/manifest.sh .manifest.tmpl
   environment:
@@ -698,7 +698,7 @@ steps:
       from_secret: docker_username
 
 - name: xenial/template
-  image: alpine
+  image: bash
   commands:
   - docker/manifest.sh .manifest.tmpl
   environment:
@@ -716,7 +716,7 @@ steps:
       from_secret: docker_username
 
 - name: trusty/template
-  image: alpine
+  image: bash
   commands:
   - docker/manifest.sh .manifest.tmpl
   environment:
