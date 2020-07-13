@@ -561,13 +561,13 @@ steps:
   - docker/tags.sh .tags
   environment:
     ARCH: amd64
-    DATE: 20201217
+    DATE: 20191217
 
 - name: trusty/dryrun
   image: plugins/docker
   settings:
     build_args:
-    - BASE=ubuntu:trusty-20201217
+    - BASE=ubuntu:trusty-20191217
     dockerfile: docker/Dockerfile
     dry_run: true
     password:
@@ -585,7 +585,7 @@ steps:
   image: plugins/docker
   settings:
     build_args:
-    - BASE=ubuntu:trusty-20201217
+    - BASE=ubuntu:trusty-20191217
     dockerfile: docker/Dockerfile
     password:
       from_secret: docker_password
@@ -721,7 +721,7 @@ steps:
   - docker/manifest.sh .manifest.tmpl
   environment:
     CODENAME: trusty
-    DATE: 20201217
+    DATE: 20191217
 
 - name: trusty
   image: plugins/manifest

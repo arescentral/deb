@@ -22,7 +22,7 @@ local configs = [
   ubuntu('focal', '20200606'),
   ubuntu('bionic', '20200526'),
   ubuntu('xenial', '20200514'),
-  ubuntu('trusty', '20201217'),
+  ubuntu('trusty', '20191217'),
 ];
 
 local image(config, arch, dryRun) = {
