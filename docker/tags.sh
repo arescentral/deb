@@ -5,9 +5,9 @@ set -o nounset
 set -o pipefail
 
 if [[ -n "${DRONE_TAG-}" ]]; then
-  XYZ=$${DRONE_TAG#v}
-  XY=$${XYZ%%.*}
-  X=$${XY%%.*}
+  XYZ=${DRONE_TAG#v}
+  XY=${XYZ%%.*}
+  X=${XY%%.*}
   tee $1 <<EOF
 latest-$ARCH,
 $XYZ-$ARCH,
