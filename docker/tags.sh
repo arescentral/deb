@@ -6,8 +6,8 @@ set -o pipefail
 
 if [[ -n "${DRONE_TAG-}" ]]; then
   XYZ=${DRONE_TAG#v}
-  XY=${XYZ%%.*}
-  X=${XY%%.*}
+  XY=${XYZ%.*}
+  X=${XY%.*}
   tee $1 <<EOF
 latest-$ARCH,
 $XYZ-$ARCH,
