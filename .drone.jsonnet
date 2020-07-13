@@ -19,7 +19,6 @@ local configs = [
   debian('bullseye', '20200607'),
   debian('buster', '20200607'),
   debian('stretch', '20200607'),
-  debian('jessie', '20200607'),
   ubuntu('focal', '20200606'),
   ubuntu('bionic', '20200526'),
   ubuntu('xenial', '20200514'),
@@ -72,7 +71,6 @@ local manifest(config) = [{
   environment: {
     CODENAME: config.codename,
     DATE: config.date,
-    ARCH: arch,
   },
   commands: [
     'docker/manifest.sh | tee .manifest.tmpl',
@@ -85,12 +83,6 @@ local manifest(config) = [{
     password: { from_secret: 'docker_password' },
     spec: '.manifest.tmpl',
     ignore_missing: true,
-    tags: [
-      config.codename,
-      '%s-%s' % [config.codename, config.date],
-      '%s-%d' % [config.codename, revision],
-      '%s-%s-%d' % [config.codename, config.date, revision],
-    ],
   },
 }];
 
