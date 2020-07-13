@@ -58,7 +58,7 @@ local tagged_image(config, arch) = [
     },
     commands: [
       'env | sort',
-      'docker/tags.sh | tee .tags',
+      'docker/tags.sh .tags',
     ],
   },
   image(config, arch, true),
@@ -73,7 +73,7 @@ local manifest(config) = [{
     DATE: config.date,
   },
   commands: [
-    'docker/manifest.sh | tee .manifest.tmpl',
+    'docker/manifest.sh .manifest.tmpl',
   ],
 }, {
   name: config.codename,

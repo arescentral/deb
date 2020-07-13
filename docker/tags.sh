@@ -1,10 +1,14 @@
 #!/bin/bash
 
-if [[ -n "$DRONE_TAG" ]]; then
+set -o errexit
+set -o nounset
+set -o pipefail
+
+if [[ -n "${DRONE_TAG-}" ]]; then
   XYZ=$${DRONE_TAG#v}
   XY=$${XYZ%%.*}
   X=$${XY%%.*}
-  cat <<EOF
+  tee $1 <<EOF
 latest-$ARCH,
 $XYZ-$ARCH,
 $XY-$ARCH,
@@ -15,7 +19,7 @@ $XY-$DATE-$ARCH,
 $X-$DATE-$ARCH
 EOF
 else
-  cat <<EOF
+  tee $1 <<EOF
 HEAD-$ARCH,
 HEAD-$DATE-$ARCH
 EOF

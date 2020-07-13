@@ -1,6 +1,10 @@
 #!/bin/bash
 
-if [[ -n "$DRONE_TAG" ]]; then
+set -o errexit
+set -o nounset
+set -o pipefail
+
+if [[ -n "${DRONE_TAG-}" ]]; then
     XYZ=${DRONE_TAG#v}
     XY=${XYZ%.*}
     X=${XY%.*}
@@ -21,7 +25,7 @@ else
   - HEAD-$DATE"
 fi
 
-cat <<EOF
+tee $1 <<EOF
 image: arescentral/deb-$CODENAME:$FIRST_TAG
 $OTHER_TAGS
 manifests:

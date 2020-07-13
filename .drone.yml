@@ -12,7 +12,7 @@ steps:
   image: alpine
   commands:
   - env | sort
-  - docker/tags.sh | tee .tags
+  - docker/tags.sh .tags
   environment:
     ARCH: amd64
     DATE: 20200607
@@ -55,7 +55,7 @@ steps:
   image: alpine
   commands:
   - env | sort
-  - docker/tags.sh | tee .tags
+  - docker/tags.sh .tags
   environment:
     ARCH: amd64
     DATE: 20200607
@@ -98,7 +98,7 @@ steps:
   image: alpine
   commands:
   - env | sort
-  - docker/tags.sh | tee .tags
+  - docker/tags.sh .tags
   environment:
     ARCH: amd64
     DATE: 20200607
@@ -151,7 +151,7 @@ steps:
   image: alpine
   commands:
   - env | sort
-  - docker/tags.sh | tee .tags
+  - docker/tags.sh .tags
   environment:
     ARCH: arm64
     DATE: 20200607
@@ -194,7 +194,7 @@ steps:
   image: alpine
   commands:
   - env | sort
-  - docker/tags.sh | tee .tags
+  - docker/tags.sh .tags
   environment:
     ARCH: arm64
     DATE: 20200607
@@ -237,7 +237,7 @@ steps:
   image: alpine
   commands:
   - env | sort
-  - docker/tags.sh | tee .tags
+  - docker/tags.sh .tags
   environment:
     ARCH: arm64
     DATE: 20200607
@@ -290,7 +290,7 @@ steps:
   image: alpine
   commands:
   - env | sort
-  - docker/tags.sh | tee .tags
+  - docker/tags.sh .tags
   environment:
     ARCH: arm
     DATE: 20200607
@@ -333,7 +333,7 @@ steps:
   image: alpine
   commands:
   - env | sort
-  - docker/tags.sh | tee .tags
+  - docker/tags.sh .tags
   environment:
     ARCH: arm
     DATE: 20200607
@@ -376,7 +376,7 @@ steps:
   image: alpine
   commands:
   - env | sort
-  - docker/tags.sh | tee .tags
+  - docker/tags.sh .tags
   environment:
     ARCH: arm
     DATE: 20200607
@@ -429,7 +429,7 @@ steps:
   image: alpine
   commands:
   - env | sort
-  - docker/tags.sh | tee .tags
+  - docker/tags.sh .tags
   environment:
     ARCH: amd64
     DATE: 20200606
@@ -472,7 +472,7 @@ steps:
   image: alpine
   commands:
   - env | sort
-  - docker/tags.sh | tee .tags
+  - docker/tags.sh .tags
   environment:
     ARCH: amd64
     DATE: 20200526
@@ -515,7 +515,7 @@ steps:
   image: alpine
   commands:
   - env | sort
-  - docker/tags.sh | tee .tags
+  - docker/tags.sh .tags
   environment:
     ARCH: amd64
     DATE: 20200514
@@ -558,7 +558,7 @@ steps:
   image: alpine
   commands:
   - env | sort
-  - docker/tags.sh | tee .tags
+  - docker/tags.sh .tags
   environment:
     ARCH: amd64
     DATE: 20201217
@@ -610,7 +610,7 @@ steps:
 - name: bullseye/template
   image: alpine
   commands:
-  - docker/manifest.sh | tee .manifest.tmpl
+  - docker/manifest.sh .manifest.tmpl
   environment:
     CODENAME: bullseye
     DATE: 20200607
@@ -628,7 +628,7 @@ steps:
 - name: buster/template
   image: alpine
   commands:
-  - docker/manifest.sh | tee .manifest.tmpl
+  - docker/manifest.sh .manifest.tmpl
   environment:
     CODENAME: buster
     DATE: 20200607
@@ -646,7 +646,7 @@ steps:
 - name: stretch/template
   image: alpine
   commands:
-  - docker/manifest.sh | tee .manifest.tmpl
+  - docker/manifest.sh .manifest.tmpl
   environment:
     CODENAME: stretch
     DATE: 20200607
@@ -664,7 +664,7 @@ steps:
 - name: focal/template
   image: alpine
   commands:
-  - docker/manifest.sh | tee .manifest.tmpl
+  - docker/manifest.sh .manifest.tmpl
   environment:
     CODENAME: focal
     DATE: 20200606
@@ -682,7 +682,7 @@ steps:
 - name: bionic/template
   image: alpine
   commands:
-  - docker/manifest.sh | tee .manifest.tmpl
+  - docker/manifest.sh .manifest.tmpl
   environment:
     CODENAME: bionic
     DATE: 20200526
@@ -700,7 +700,7 @@ steps:
 - name: xenial/template
   image: alpine
   commands:
-  - docker/manifest.sh | tee .manifest.tmpl
+  - docker/manifest.sh .manifest.tmpl
   environment:
     CODENAME: xenial
     DATE: 20200514
@@ -718,7 +718,7 @@ steps:
 - name: trusty/template
   image: alpine
   commands:
-  - docker/manifest.sh | tee .manifest.tmpl
+  - docker/manifest.sh .manifest.tmpl
   environment:
     CODENAME: trusty
     DATE: 20201217
