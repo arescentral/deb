@@ -12,8 +12,10 @@ import (
 )
 
 func main() {
+	os.Setenv("DEBIAN_FRONTEND", "noninteractive")
+
 	run("apt-get", "update")
-	run("apt-get", "install",
+	run("apt-get", "install", "-y", "--no-install-recommends",
 		"apt-transport-https",
 		"build-essential",
 		"devscripts",
@@ -32,7 +34,6 @@ func main() {
 	cp(archive, filepath.Join(workDir, orig))
 	cpR(s.dir, filepath.Join(buildDir, "debian"))
 
-	os.Setenv("DEBIAN_FRONTEND", "noninteractive")
 	buildDeps := fmt.Sprintf("%s-build-deps_%s_all.deb", s.source, s.version)
 	run("mk-build-deps", filepath.Join(s.dir, "control"))
 	for _, key := range s.recvKeys {
@@ -42,11 +43,7 @@ func main() {
 		appendTo("/etc/apt/sources.list.d/deb-drone.list", source)
 	}
 	run("apt-get", "update")
-	run(
-		"apt-get", "install", "-y", "--no-install-recommends",
-		"devscripts",
-		"./"+buildDeps,
-	)
+	run("apt-get", "install", "-y", "--no-install-recommends", "./"+buildDeps)
 
 	runIn(buildDir, "dpkg-buildpackage")
 	changes := globSingle(filepath.Join(workDir, "*.changes"))
