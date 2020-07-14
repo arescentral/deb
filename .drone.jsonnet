@@ -29,7 +29,7 @@ local checks = {
   type: 'docker',
   name: 'checks',
   steps: [{
-    name: 'drone',
+    name: 'jsonnet',
     image: 'bitnami/jsonnet:0.16.0',
     commands: [
       'jsonnetfmt .drone.jsonnet | diff -u .drone.jsonnet -',

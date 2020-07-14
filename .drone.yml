@@ -9,7 +9,7 @@
             "jsonnet -y .drone.jsonnet | diff -u .drone.yml -"
          ],
          "image": "bitnami/jsonnet:0.16.0",
-         "name": "drone"
+         "name": "jsonnet"
       },
       {
          "commands": [
