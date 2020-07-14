@@ -8,25 +8,21 @@ if [[ -n "${DRONE_TAG-}" ]]; then
     XYZ=${DRONE_TAG#v}
     XY=${XYZ%.*}
     X=${XY%.*}
-    SOURCE_TAG="$XYZ-$DATE"
-    FIRST_TAG=latest
+    SOURCE_TAG=$XYZ-$DATE
     OTHER_TAGS="tags:
+  - $XY-$DATE
+  - $X-$DATE
   - $XYZ
   - $XY
-  - $X
-  - latest-$DATE
-  - $XYZ-$DATE
-  - $XY-$DATE
-  - $X-$DATE"
+  - $X"
 else
-    SOURCE_TAG="HEAD-$DATE"
-    FIRST_TAG=HEAD
+    SOURCE_TAG=latest-$DATE
     OTHER_TAGS="tags:
-  - HEAD-$DATE"
+  - latest"
 fi
 
 tee $1 <<EOF
-image: arescentral/deb-$CODENAME:$FIRST_TAG
+image: arescentral/deb-$CODENAME:$SOURCE_TAG
 $OTHER_TAGS
 manifests:
   - image: arescentral/deb-$CODENAME:$SOURCE_TAG-amd64

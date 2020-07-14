@@ -9,18 +9,16 @@ if [[ -n "${DRONE_TAG-}" ]]; then
   XY=${XYZ%.*}
   X=${XY%.*}
   tee $1 <<EOF
-latest-$ARCH,
 $XYZ-$ARCH,
 $XY-$ARCH,
 $X-$ARCH,
-latest-$DATE-$ARCH,
 $XYZ-$DATE-$ARCH,
 $XY-$DATE-$ARCH,
 $X-$DATE-$ARCH
 EOF
 else
   tee $1 <<EOF
-HEAD-$ARCH,
-HEAD-$DATE-$ARCH
+latest-$ARCH,
+latest-$DATE-$ARCH
 EOF
 fi
