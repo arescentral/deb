@@ -1,4 +1,4 @@
-module github.com/arescentral/mkdeb
+module github.com/arescentral/deb
 
 go 1.14
 
