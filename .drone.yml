@@ -1,742 +1,1139 @@
 ---
-kind: pipeline
-type: docker
-name: debian/amd64
-
-platform:
-  os: linux
-  arch: amd64
-
-steps:
-- name: bullseye/tags
-  image: bash
-  commands:
-  - env | sort
-  - docker/tags.sh .tags
-  environment:
-    ARCH: amd64
-    DATE: 20200607
-
-- name: bullseye/dryrun
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=debian:bullseye-20200607-slim
-    dockerfile: docker/Dockerfile
-    dry_run: true
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-bullseye
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-      exclude:
-      - refs/heads/master
-      - refs/tags/*
-
-- name: bullseye/image
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=debian:bullseye-20200607-slim
-    dockerfile: docker/Dockerfile
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-bullseye
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-    - refs/heads/master
-    - refs/tags/*
-
-- name: buster/tags
-  image: bash
-  commands:
-  - env | sort
-  - docker/tags.sh .tags
-  environment:
-    ARCH: amd64
-    DATE: 20200607
-
-- name: buster/dryrun
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=debian:buster-20200607-slim
-    dockerfile: docker/Dockerfile
-    dry_run: true
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-buster
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-      exclude:
-      - refs/heads/master
-      - refs/tags/*
-
-- name: buster/image
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=debian:buster-20200607-slim
-    dockerfile: docker/Dockerfile
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-buster
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-    - refs/heads/master
-    - refs/tags/*
-
-- name: stretch/tags
-  image: bash
-  commands:
-  - env | sort
-  - docker/tags.sh .tags
-  environment:
-    ARCH: amd64
-    DATE: 20200607
-
-- name: stretch/dryrun
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=debian:stretch-20200607-slim
-    dockerfile: docker/Dockerfile
-    dry_run: true
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-stretch
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-      exclude:
-      - refs/heads/master
-      - refs/tags/*
-
-- name: stretch/image
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=debian:stretch-20200607-slim
-    dockerfile: docker/Dockerfile
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-stretch
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-    - refs/heads/master
-    - refs/tags/*
-
+{
+   "kind": "pipeline",
+   "name": "checks",
+   "steps": [
+      {
+         "commands": [
+            "jsonnetfmt .drone.jsonnet | diff -u .drone.jsonnet -",
+            "jsonnet -y .drone.jsonnet | diff -u .drone.yml -"
+         ],
+         "image": "bitnami/jsonnet:0.16.0",
+         "name": "drone"
+      },
+      {
+         "commands": [
+            "if gofmt -d *.go | grep .; then false; else true; fi",
+            "go vet -mod=vendor ./...",
+            "go test -mod=vendor ./..."
+         ],
+         "image": "golang:1.14",
+         "name": "go"
+      }
+   ],
+   "type": "docker"
+}
 ---
-kind: pipeline
-type: docker
-name: debian/arm64
-
-platform:
-  os: linux
-  arch: arm64
-
-steps:
-- name: bullseye/tags
-  image: bash
-  commands:
-  - env | sort
-  - docker/tags.sh .tags
-  environment:
-    ARCH: arm64
-    DATE: 20200607
-
-- name: bullseye/dryrun
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=debian:bullseye-20200607-slim
-    dockerfile: docker/Dockerfile
-    dry_run: true
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-bullseye
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-      exclude:
-      - refs/heads/master
-      - refs/tags/*
-
-- name: bullseye/image
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=debian:bullseye-20200607-slim
-    dockerfile: docker/Dockerfile
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-bullseye
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-    - refs/heads/master
-    - refs/tags/*
-
-- name: buster/tags
-  image: bash
-  commands:
-  - env | sort
-  - docker/tags.sh .tags
-  environment:
-    ARCH: arm64
-    DATE: 20200607
-
-- name: buster/dryrun
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=debian:buster-20200607-slim
-    dockerfile: docker/Dockerfile
-    dry_run: true
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-buster
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-      exclude:
-      - refs/heads/master
-      - refs/tags/*
-
-- name: buster/image
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=debian:buster-20200607-slim
-    dockerfile: docker/Dockerfile
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-buster
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-    - refs/heads/master
-    - refs/tags/*
-
-- name: stretch/tags
-  image: bash
-  commands:
-  - env | sort
-  - docker/tags.sh .tags
-  environment:
-    ARCH: arm64
-    DATE: 20200607
-
-- name: stretch/dryrun
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=debian:stretch-20200607-slim
-    dockerfile: docker/Dockerfile
-    dry_run: true
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-stretch
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-      exclude:
-      - refs/heads/master
-      - refs/tags/*
-
-- name: stretch/image
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=debian:stretch-20200607-slim
-    dockerfile: docker/Dockerfile
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-stretch
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-    - refs/heads/master
-    - refs/tags/*
-
+{
+   "depends_on": [
+      "checks"
+   ],
+   "kind": "pipeline",
+   "name": "debian/amd64",
+   "platform": {
+      "arch": "amd64",
+      "os": "linux"
+   },
+   "steps": [
+      {
+         "commands": [
+            "go build -mod=vendor *.go",
+            "ls -lh deb-drone"
+         ],
+         "image": "golang:1.14",
+         "name": "build"
+      },
+      {
+         "commands": [
+            "env | sort",
+            "docker/tags.sh .tags"
+         ],
+         "environment": {
+            "ARCH": "amd64",
+            "DATE": "20200607"
+         },
+         "image": "bash",
+         "name": "bullseye/tags"
+      },
+      {
+         "image": "plugins/docker",
+         "name": "bullseye/dryrun",
+         "settings": {
+            "build_args": [
+               "BASE=debian:bullseye-20200607-slim"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": true,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-bullseye",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "exclude": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      },
+      {
+         "image": "plugins/docker",
+         "name": "bullseye/image",
+         "settings": {
+            "build_args": [
+               "BASE=debian:bullseye-20200607-slim"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": false,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-bullseye",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "include": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      },
+      {
+         "commands": [
+            "env | sort",
+            "docker/tags.sh .tags"
+         ],
+         "environment": {
+            "ARCH": "amd64",
+            "DATE": "20200607"
+         },
+         "image": "bash",
+         "name": "buster/tags"
+      },
+      {
+         "image": "plugins/docker",
+         "name": "buster/dryrun",
+         "settings": {
+            "build_args": [
+               "BASE=debian:buster-20200607-slim"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": true,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-buster",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "exclude": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      },
+      {
+         "image": "plugins/docker",
+         "name": "buster/image",
+         "settings": {
+            "build_args": [
+               "BASE=debian:buster-20200607-slim"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": false,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-buster",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "include": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      },
+      {
+         "commands": [
+            "env | sort",
+            "docker/tags.sh .tags"
+         ],
+         "environment": {
+            "ARCH": "amd64",
+            "DATE": "20200607"
+         },
+         "image": "bash",
+         "name": "stretch/tags"
+      },
+      {
+         "image": "plugins/docker",
+         "name": "stretch/dryrun",
+         "settings": {
+            "build_args": [
+               "BASE=debian:stretch-20200607-slim"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": true,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-stretch",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "exclude": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      },
+      {
+         "image": "plugins/docker",
+         "name": "stretch/image",
+         "settings": {
+            "build_args": [
+               "BASE=debian:stretch-20200607-slim"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": false,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-stretch",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "include": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      }
+   ],
+   "type": "docker"
+}
 ---
-kind: pipeline
-type: docker
-name: debian/arm
-
-platform:
-  os: linux
-  arch: arm
-
-steps:
-- name: bullseye/tags
-  image: bash
-  commands:
-  - env | sort
-  - docker/tags.sh .tags
-  environment:
-    ARCH: arm
-    DATE: 20200607
-
-- name: bullseye/dryrun
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=debian:bullseye-20200607-slim
-    dockerfile: docker/Dockerfile
-    dry_run: true
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-bullseye
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-      exclude:
-      - refs/heads/master
-      - refs/tags/*
-
-- name: bullseye/image
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=debian:bullseye-20200607-slim
-    dockerfile: docker/Dockerfile
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-bullseye
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-    - refs/heads/master
-    - refs/tags/*
-
-- name: buster/tags
-  image: bash
-  commands:
-  - env | sort
-  - docker/tags.sh .tags
-  environment:
-    ARCH: arm
-    DATE: 20200607
-
-- name: buster/dryrun
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=debian:buster-20200607-slim
-    dockerfile: docker/Dockerfile
-    dry_run: true
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-buster
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-      exclude:
-      - refs/heads/master
-      - refs/tags/*
-
-- name: buster/image
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=debian:buster-20200607-slim
-    dockerfile: docker/Dockerfile
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-buster
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-    - refs/heads/master
-    - refs/tags/*
-
-- name: stretch/tags
-  image: bash
-  commands:
-  - env | sort
-  - docker/tags.sh .tags
-  environment:
-    ARCH: arm
-    DATE: 20200607
-
-- name: stretch/dryrun
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=debian:stretch-20200607-slim
-    dockerfile: docker/Dockerfile
-    dry_run: true
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-stretch
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-      exclude:
-      - refs/heads/master
-      - refs/tags/*
-
-- name: stretch/image
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=debian:stretch-20200607-slim
-    dockerfile: docker/Dockerfile
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-stretch
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-    - refs/heads/master
-    - refs/tags/*
-
+{
+   "depends_on": [
+      "checks"
+   ],
+   "kind": "pipeline",
+   "name": "debian/arm64",
+   "platform": {
+      "arch": "arm64",
+      "os": "linux"
+   },
+   "steps": [
+      {
+         "commands": [
+            "go build -mod=vendor *.go",
+            "ls -lh deb-drone"
+         ],
+         "image": "golang:1.14",
+         "name": "build"
+      },
+      {
+         "commands": [
+            "env | sort",
+            "docker/tags.sh .tags"
+         ],
+         "environment": {
+            "ARCH": "arm64",
+            "DATE": "20200607"
+         },
+         "image": "bash",
+         "name": "bullseye/tags"
+      },
+      {
+         "image": "plugins/docker",
+         "name": "bullseye/dryrun",
+         "settings": {
+            "build_args": [
+               "BASE=debian:bullseye-20200607-slim"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": true,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-bullseye",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "exclude": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      },
+      {
+         "image": "plugins/docker",
+         "name": "bullseye/image",
+         "settings": {
+            "build_args": [
+               "BASE=debian:bullseye-20200607-slim"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": false,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-bullseye",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "include": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      },
+      {
+         "commands": [
+            "env | sort",
+            "docker/tags.sh .tags"
+         ],
+         "environment": {
+            "ARCH": "arm64",
+            "DATE": "20200607"
+         },
+         "image": "bash",
+         "name": "buster/tags"
+      },
+      {
+         "image": "plugins/docker",
+         "name": "buster/dryrun",
+         "settings": {
+            "build_args": [
+               "BASE=debian:buster-20200607-slim"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": true,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-buster",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "exclude": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      },
+      {
+         "image": "plugins/docker",
+         "name": "buster/image",
+         "settings": {
+            "build_args": [
+               "BASE=debian:buster-20200607-slim"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": false,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-buster",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "include": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      },
+      {
+         "commands": [
+            "env | sort",
+            "docker/tags.sh .tags"
+         ],
+         "environment": {
+            "ARCH": "arm64",
+            "DATE": "20200607"
+         },
+         "image": "bash",
+         "name": "stretch/tags"
+      },
+      {
+         "image": "plugins/docker",
+         "name": "stretch/dryrun",
+         "settings": {
+            "build_args": [
+               "BASE=debian:stretch-20200607-slim"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": true,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-stretch",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "exclude": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      },
+      {
+         "image": "plugins/docker",
+         "name": "stretch/image",
+         "settings": {
+            "build_args": [
+               "BASE=debian:stretch-20200607-slim"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": false,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-stretch",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "include": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      }
+   ],
+   "type": "docker"
+}
 ---
-kind: pipeline
-type: docker
-name: ubuntu/amd64
-
-platform:
-  os: linux
-  arch: amd64
-
-steps:
-- name: focal/tags
-  image: bash
-  commands:
-  - env | sort
-  - docker/tags.sh .tags
-  environment:
-    ARCH: amd64
-    DATE: 20200606
-
-- name: focal/dryrun
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=ubuntu:focal-20200606
-    dockerfile: docker/Dockerfile
-    dry_run: true
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-focal
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-      exclude:
-      - refs/heads/master
-      - refs/tags/*
-
-- name: focal/image
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=ubuntu:focal-20200606
-    dockerfile: docker/Dockerfile
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-focal
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-    - refs/heads/master
-    - refs/tags/*
-
-- name: bionic/tags
-  image: bash
-  commands:
-  - env | sort
-  - docker/tags.sh .tags
-  environment:
-    ARCH: amd64
-    DATE: 20200526
-
-- name: bionic/dryrun
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=ubuntu:bionic-20200526
-    dockerfile: docker/Dockerfile
-    dry_run: true
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-bionic
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-      exclude:
-      - refs/heads/master
-      - refs/tags/*
-
-- name: bionic/image
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=ubuntu:bionic-20200526
-    dockerfile: docker/Dockerfile
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-bionic
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-    - refs/heads/master
-    - refs/tags/*
-
-- name: xenial/tags
-  image: bash
-  commands:
-  - env | sort
-  - docker/tags.sh .tags
-  environment:
-    ARCH: amd64
-    DATE: 20200514
-
-- name: xenial/dryrun
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=ubuntu:xenial-20200514
-    dockerfile: docker/Dockerfile
-    dry_run: true
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-xenial
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-      exclude:
-      - refs/heads/master
-      - refs/tags/*
-
-- name: xenial/image
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=ubuntu:xenial-20200514
-    dockerfile: docker/Dockerfile
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-xenial
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-    - refs/heads/master
-    - refs/tags/*
-
-- name: trusty/tags
-  image: bash
-  commands:
-  - env | sort
-  - docker/tags.sh .tags
-  environment:
-    ARCH: amd64
-    DATE: 20191217
-
-- name: trusty/dryrun
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=ubuntu:trusty-20191217
-    dockerfile: docker/Dockerfile
-    dry_run: true
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-trusty
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-      exclude:
-      - refs/heads/master
-      - refs/tags/*
-
-- name: trusty/image
-  image: plugins/docker
-  settings:
-    build_args:
-    - BASE=ubuntu:trusty-20191217
-    dockerfile: docker/Dockerfile
-    password:
-      from_secret: docker_password
-    repo: arescentral/deb-trusty
-    username:
-      from_secret: docker_username
-  when:
-    ref:
-    - refs/heads/master
-    - refs/tags/*
-
+{
+   "depends_on": [
+      "checks"
+   ],
+   "kind": "pipeline",
+   "name": "debian/arm",
+   "platform": {
+      "arch": "arm",
+      "os": "linux"
+   },
+   "steps": [
+      {
+         "commands": [
+            "go build -mod=vendor *.go",
+            "ls -lh deb-drone"
+         ],
+         "image": "golang:1.14",
+         "name": "build"
+      },
+      {
+         "commands": [
+            "env | sort",
+            "docker/tags.sh .tags"
+         ],
+         "environment": {
+            "ARCH": "arm",
+            "DATE": "20200607"
+         },
+         "image": "bash",
+         "name": "bullseye/tags"
+      },
+      {
+         "image": "plugins/docker",
+         "name": "bullseye/dryrun",
+         "settings": {
+            "build_args": [
+               "BASE=debian:bullseye-20200607-slim"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": true,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-bullseye",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "exclude": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      },
+      {
+         "image": "plugins/docker",
+         "name": "bullseye/image",
+         "settings": {
+            "build_args": [
+               "BASE=debian:bullseye-20200607-slim"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": false,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-bullseye",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "include": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      },
+      {
+         "commands": [
+            "env | sort",
+            "docker/tags.sh .tags"
+         ],
+         "environment": {
+            "ARCH": "arm",
+            "DATE": "20200607"
+         },
+         "image": "bash",
+         "name": "buster/tags"
+      },
+      {
+         "image": "plugins/docker",
+         "name": "buster/dryrun",
+         "settings": {
+            "build_args": [
+               "BASE=debian:buster-20200607-slim"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": true,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-buster",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "exclude": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      },
+      {
+         "image": "plugins/docker",
+         "name": "buster/image",
+         "settings": {
+            "build_args": [
+               "BASE=debian:buster-20200607-slim"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": false,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-buster",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "include": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      },
+      {
+         "commands": [
+            "env | sort",
+            "docker/tags.sh .tags"
+         ],
+         "environment": {
+            "ARCH": "arm",
+            "DATE": "20200607"
+         },
+         "image": "bash",
+         "name": "stretch/tags"
+      },
+      {
+         "image": "plugins/docker",
+         "name": "stretch/dryrun",
+         "settings": {
+            "build_args": [
+               "BASE=debian:stretch-20200607-slim"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": true,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-stretch",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "exclude": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      },
+      {
+         "image": "plugins/docker",
+         "name": "stretch/image",
+         "settings": {
+            "build_args": [
+               "BASE=debian:stretch-20200607-slim"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": false,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-stretch",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "include": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      }
+   ],
+   "type": "docker"
+}
 ---
-kind: pipeline
-type: docker
-name: default
-
-platform:
-  os: linux
-  arch: amd64
-
-steps:
-- name: bullseye/template
-  image: bash
-  commands:
-  - docker/manifest.sh .manifest.tmpl
-  environment:
-    CODENAME: bullseye
-    DATE: 20200607
-
-- name: bullseye
-  image: plugins/manifest
-  settings:
-    ignore_missing: true
-    password:
-      from_secret: docker_password
-    spec: .manifest.tmpl
-    username:
-      from_secret: docker_username
-
-- name: buster/template
-  image: bash
-  commands:
-  - docker/manifest.sh .manifest.tmpl
-  environment:
-    CODENAME: buster
-    DATE: 20200607
-
-- name: buster
-  image: plugins/manifest
-  settings:
-    ignore_missing: true
-    password:
-      from_secret: docker_password
-    spec: .manifest.tmpl
-    username:
-      from_secret: docker_username
-
-- name: stretch/template
-  image: bash
-  commands:
-  - docker/manifest.sh .manifest.tmpl
-  environment:
-    CODENAME: stretch
-    DATE: 20200607
-
-- name: stretch
-  image: plugins/manifest
-  settings:
-    ignore_missing: true
-    password:
-      from_secret: docker_password
-    spec: .manifest.tmpl
-    username:
-      from_secret: docker_username
-
-- name: focal/template
-  image: bash
-  commands:
-  - docker/manifest.sh .manifest.tmpl
-  environment:
-    CODENAME: focal
-    DATE: 20200606
-
-- name: focal
-  image: plugins/manifest
-  settings:
-    ignore_missing: true
-    password:
-      from_secret: docker_password
-    spec: .manifest.tmpl
-    username:
-      from_secret: docker_username
-
-- name: bionic/template
-  image: bash
-  commands:
-  - docker/manifest.sh .manifest.tmpl
-  environment:
-    CODENAME: bionic
-    DATE: 20200526
-
-- name: bionic
-  image: plugins/manifest
-  settings:
-    ignore_missing: true
-    password:
-      from_secret: docker_password
-    spec: .manifest.tmpl
-    username:
-      from_secret: docker_username
-
-- name: xenial/template
-  image: bash
-  commands:
-  - docker/manifest.sh .manifest.tmpl
-  environment:
-    CODENAME: xenial
-    DATE: 20200514
-
-- name: xenial
-  image: plugins/manifest
-  settings:
-    ignore_missing: true
-    password:
-      from_secret: docker_password
-    spec: .manifest.tmpl
-    username:
-      from_secret: docker_username
-
-- name: trusty/template
-  image: bash
-  commands:
-  - docker/manifest.sh .manifest.tmpl
-  environment:
-    CODENAME: trusty
-    DATE: 20191217
-
-- name: trusty
-  image: plugins/manifest
-  settings:
-    ignore_missing: true
-    password:
-      from_secret: docker_password
-    spec: .manifest.tmpl
-    username:
-      from_secret: docker_username
-
-depends_on:
-- debian/amd64
-- debian/arm64
-- debian/arm
-- ubuntu/amd64
-
+{
+   "depends_on": [
+      "checks"
+   ],
+   "kind": "pipeline",
+   "name": "ubuntu/amd64",
+   "platform": {
+      "arch": "amd64",
+      "os": "linux"
+   },
+   "steps": [
+      {
+         "commands": [
+            "go build -mod=vendor *.go",
+            "ls -lh deb-drone"
+         ],
+         "image": "golang:1.14",
+         "name": "build"
+      },
+      {
+         "commands": [
+            "env | sort",
+            "docker/tags.sh .tags"
+         ],
+         "environment": {
+            "ARCH": "amd64",
+            "DATE": "20200606"
+         },
+         "image": "bash",
+         "name": "focal/tags"
+      },
+      {
+         "image": "plugins/docker",
+         "name": "focal/dryrun",
+         "settings": {
+            "build_args": [
+               "BASE=ubuntu:focal-20200606"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": true,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-focal",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "exclude": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      },
+      {
+         "image": "plugins/docker",
+         "name": "focal/image",
+         "settings": {
+            "build_args": [
+               "BASE=ubuntu:focal-20200606"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": false,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-focal",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "include": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      },
+      {
+         "commands": [
+            "env | sort",
+            "docker/tags.sh .tags"
+         ],
+         "environment": {
+            "ARCH": "amd64",
+            "DATE": "20200526"
+         },
+         "image": "bash",
+         "name": "bionic/tags"
+      },
+      {
+         "image": "plugins/docker",
+         "name": "bionic/dryrun",
+         "settings": {
+            "build_args": [
+               "BASE=ubuntu:bionic-20200526"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": true,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-bionic",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "exclude": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      },
+      {
+         "image": "plugins/docker",
+         "name": "bionic/image",
+         "settings": {
+            "build_args": [
+               "BASE=ubuntu:bionic-20200526"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": false,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-bionic",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "include": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      },
+      {
+         "commands": [
+            "env | sort",
+            "docker/tags.sh .tags"
+         ],
+         "environment": {
+            "ARCH": "amd64",
+            "DATE": "20200514"
+         },
+         "image": "bash",
+         "name": "xenial/tags"
+      },
+      {
+         "image": "plugins/docker",
+         "name": "xenial/dryrun",
+         "settings": {
+            "build_args": [
+               "BASE=ubuntu:xenial-20200514"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": true,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-xenial",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "exclude": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      },
+      {
+         "image": "plugins/docker",
+         "name": "xenial/image",
+         "settings": {
+            "build_args": [
+               "BASE=ubuntu:xenial-20200514"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": false,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-xenial",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "include": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      },
+      {
+         "commands": [
+            "env | sort",
+            "docker/tags.sh .tags"
+         ],
+         "environment": {
+            "ARCH": "amd64",
+            "DATE": "20191217"
+         },
+         "image": "bash",
+         "name": "trusty/tags"
+      },
+      {
+         "image": "plugins/docker",
+         "name": "trusty/dryrun",
+         "settings": {
+            "build_args": [
+               "BASE=ubuntu:trusty-20191217"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": true,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-trusty",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "exclude": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      },
+      {
+         "image": "plugins/docker",
+         "name": "trusty/image",
+         "settings": {
+            "build_args": [
+               "BASE=ubuntu:trusty-20191217"
+            ],
+            "dockerfile": "docker/Dockerfile",
+            "dry_run": false,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "repo": "arescentral/deb-trusty",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         },
+         "when": {
+            "ref": {
+               "include": [
+                  "refs/heads/master",
+                  "refs/tags/*"
+               ]
+            }
+         }
+      }
+   ],
+   "type": "docker"
+}
+---
+{
+   "depends_on": [
+      "debian/amd64",
+      "debian/arm64",
+      "debian/arm",
+      "ubuntu/amd64"
+   ],
+   "kind": "pipeline",
+   "name": "manifests",
+   "steps": [
+      {
+         "commands": [
+            "docker/manifest.sh .manifest.tmpl"
+         ],
+         "environment": {
+            "CODENAME": "bullseye",
+            "DATE": "20200607"
+         },
+         "image": "bash",
+         "name": "bullseye/template"
+      },
+      {
+         "image": "plugins/manifest",
+         "name": "bullseye",
+         "settings": {
+            "ignore_missing": true,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "spec": ".manifest.tmpl",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         }
+      },
+      {
+         "commands": [
+            "docker/manifest.sh .manifest.tmpl"
+         ],
+         "environment": {
+            "CODENAME": "buster",
+            "DATE": "20200607"
+         },
+         "image": "bash",
+         "name": "buster/template"
+      },
+      {
+         "image": "plugins/manifest",
+         "name": "buster",
+         "settings": {
+            "ignore_missing": true,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "spec": ".manifest.tmpl",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         }
+      },
+      {
+         "commands": [
+            "docker/manifest.sh .manifest.tmpl"
+         ],
+         "environment": {
+            "CODENAME": "stretch",
+            "DATE": "20200607"
+         },
+         "image": "bash",
+         "name": "stretch/template"
+      },
+      {
+         "image": "plugins/manifest",
+         "name": "stretch",
+         "settings": {
+            "ignore_missing": true,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "spec": ".manifest.tmpl",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         }
+      },
+      {
+         "commands": [
+            "docker/manifest.sh .manifest.tmpl"
+         ],
+         "environment": {
+            "CODENAME": "focal",
+            "DATE": "20200606"
+         },
+         "image": "bash",
+         "name": "focal/template"
+      },
+      {
+         "image": "plugins/manifest",
+         "name": "focal",
+         "settings": {
+            "ignore_missing": true,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "spec": ".manifest.tmpl",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         }
+      },
+      {
+         "commands": [
+            "docker/manifest.sh .manifest.tmpl"
+         ],
+         "environment": {
+            "CODENAME": "bionic",
+            "DATE": "20200526"
+         },
+         "image": "bash",
+         "name": "bionic/template"
+      },
+      {
+         "image": "plugins/manifest",
+         "name": "bionic",
+         "settings": {
+            "ignore_missing": true,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "spec": ".manifest.tmpl",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         }
+      },
+      {
+         "commands": [
+            "docker/manifest.sh .manifest.tmpl"
+         ],
+         "environment": {
+            "CODENAME": "xenial",
+            "DATE": "20200514"
+         },
+         "image": "bash",
+         "name": "xenial/template"
+      },
+      {
+         "image": "plugins/manifest",
+         "name": "xenial",
+         "settings": {
+            "ignore_missing": true,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "spec": ".manifest.tmpl",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         }
+      },
+      {
+         "commands": [
+            "docker/manifest.sh .manifest.tmpl"
+         ],
+         "environment": {
+            "CODENAME": "trusty",
+            "DATE": "20191217"
+         },
+         "image": "bash",
+         "name": "trusty/template"
+      },
+      {
+         "image": "plugins/manifest",
+         "name": "trusty",
+         "settings": {
+            "ignore_missing": true,
+            "password": {
+               "from_secret": "docker_password"
+            },
+            "spec": ".manifest.tmpl",
+            "username": {
+               "from_secret": "docker_username"
+            }
+         }
+      }
+   ],
+   "type": "docker"
+}
 ...

@@ -1,4 +1,3 @@
-// local buildDate = $(date -u +'%Y-%m-%dT%H:%M:%SZ');
 local debian(codename, date) = {
   distro: 'debian',
   codename: codename,
@@ -24,6 +23,37 @@ local configs = [
   ubuntu('xenial', '20200514'),
   ubuntu('trusty', '20191217'),
 ];
+
+local checks = {
+  kind: 'pipeline',
+  type: 'docker',
+  name: 'checks',
+  steps: [{
+    name: 'drone',
+    image: 'bitnami/jsonnet:0.16.0',
+    commands: [
+      'jsonnetfmt .drone.jsonnet | diff -u .drone.jsonnet -',
+      'jsonnet -y .drone.jsonnet | diff -u .drone.yml -',
+    ],
+  }, {
+    name: 'go',
+    image: 'golang:1.14',
+    commands: [
+      'if gofmt -d *.go | grep .; then false; else true; fi',
+      'go vet -mod=vendor ./...',
+      'go test -mod=vendor ./...',
+    ],
+  }],
+};
+
+local build = {
+  name: 'build',
+  image: 'golang:1.14',
+  commands: [
+    'go build -mod=vendor *.go',
+    'ls -lh deb-drone',
+  ],
+};
 
 local image(config, arch, dryRun) = {
   local title = 'arescentral/deb-%s' % config.codename,
@@ -65,6 +95,20 @@ local tagged_image(config, arch) = [
   image(config, arch, false),
 ];
 
+local images(distro, arch) = {
+  kind: 'pipeline',
+  type: 'docker',
+  name: '%s/%s' % [distro, arch],
+  platform: { os: 'linux', arch: arch },
+  depends_on: ['checks'],
+  steps: [build] + std.flattenArrays([
+    tagged_image(config, arch)
+    for config in configs
+    if config.distro == distro &&
+       std.count(config.arch, arch) > 0
+  ]),
+};
+
 local manifest(config) = [{
   name: '%s/template' % config.codename,
   image: 'bash',
@@ -86,23 +130,10 @@ local manifest(config) = [{
   },
 }];
 
-local build(distro, arch) = {
-  kind: 'pipeline',
-  type: 'docker',
-  name: '%s/%s' % [distro, arch],
-  platform: { os: 'linux', arch: arch },
-  steps: std.flattenArrays([
-    tagged_image(config, arch)
-    for config in configs
-    if config.distro == distro &&
-       std.count(config.arch, arch) > 0
-  ]),
-};
-
 local manifests(depends_on) = {
   kind: 'pipeline',
   type: 'docker',
-  name: 'default',
+  name: 'manifests',
   depends_on: [x.name for x in depends_on],
   steps: std.flattenArrays([
     manifest(config)
@@ -111,10 +142,10 @@ local manifests(depends_on) = {
 };
 
 local buildSteps = [
-  build('debian', 'amd64'),
-  build('debian', 'arm64'),
-  build('debian', 'arm'),
-  build('ubuntu', 'amd64'),
+  images('debian', 'amd64'),
+  images('debian', 'arm64'),
+  images('debian', 'arm'),
+  images('ubuntu', 'amd64'),
 ];
 
-buildSteps + [manifests(buildSteps)]
+[checks] + buildSteps + [manifests(buildSteps)]
