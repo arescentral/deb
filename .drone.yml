@@ -952,11 +952,10 @@
    "depends_on": [
       "debian/amd64",
       "debian/arm64",
-      "debian/arm",
-      "ubuntu/amd64"
+      "debian/arm"
    ],
    "kind": "pipeline",
-   "name": "manifests",
+   "name": "debian/multi",
    "steps": [
       {
          "commands": [
@@ -1032,7 +1031,18 @@
                "from_secret": "docker_username"
             }
          }
-      },
+      }
+   ],
+   "type": "docker"
+}
+---
+{
+   "depends_on": [
+      "ubuntu/amd64"
+   ],
+   "kind": "pipeline",
+   "name": "ubuntu/multi",
+   "steps": [
       {
          "commands": [
             "docker/manifest.sh .manifest.tmpl"

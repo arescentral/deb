@@ -3,7 +3,6 @@ local debian(codename, date) = {
   codename: codename,
   date: date,
   base: 'debian:%s-%s-slim' % [codename, date],
-  arch: ['amd64', 'arm', 'arm64'],
 };
 
 local ubuntu(codename, date) = {
@@ -11,18 +10,27 @@ local ubuntu(codename, date) = {
   codename: codename,
   date: date,
   base: 'ubuntu:%s-%s' % [codename, date],
-  arch: ['amd64'],
 };
 
-local configs = [
-  debian('bullseye', '20200607'),
-  debian('buster', '20200607'),
-  debian('stretch', '20200607'),
-  ubuntu('focal', '20200606'),
-  ubuntu('bionic', '20200526'),
-  ubuntu('xenial', '20200514'),
-  ubuntu('trusty', '20191217'),
-];
+local configs = {
+  debian: {
+    arch: ['amd64', 'arm64', 'arm'],
+    targets: [
+      debian('bullseye', '20200607'),
+      debian('buster', '20200607'),
+      debian('stretch', '20200607'),
+    ],
+  },
+  ubuntu: {
+    arch: ['amd64'],
+    targets: [
+      ubuntu('focal', '20200606'),
+      ubuntu('bionic', '20200526'),
+      ubuntu('xenial', '20200514'),
+      ubuntu('trusty', '20191217'),
+    ],
+  },
+};
 
 local checks = {
   kind: 'pipeline',
@@ -55,10 +63,10 @@ local build = {
   ],
 };
 
-local image(config, arch, dryRun) = {
-  local title = 'arescentral/deb-%s' % config.codename,
+local image(target, arch, dryRun) = {
+  local title = 'arescentral/deb-%s' % target.codename,
 
-  name: '%s/%s' % [config.codename, if dryRun then 'dryrun' else 'image'],
+  name: '%s/%s' % [target.codename, if dryRun then 'dryrun' else 'image'],
   image: 'plugins/docker',
   settings: {
     repo: title,
@@ -68,7 +76,7 @@ local image(config, arch, dryRun) = {
     dry_run: dryRun,
 
     build_args: [
-      'BASE=%s' % config.base,
+      'BASE=%s' % target.base,
     ],
   },
   when: (
@@ -78,12 +86,12 @@ local image(config, arch, dryRun) = {
   ),
 };
 
-local tagged_image(config, arch) = [
+local tagged_image(target, arch) = [
   {
-    name: '%s/tags' % config.codename,
+    name: '%s/tags' % target.codename,
     image: 'bash',
     environment: {
-      DATE: config.date,
+      DATE: target.date,
       ARCH: arch,
     },
     commands: [
@@ -91,8 +99,8 @@ local tagged_image(config, arch) = [
       'docker/tags.sh .tags',
     ],
   },
-  image(config, arch, true),
-  image(config, arch, false),
+  image(target, arch, true),
+  image(target, arch, false),
 ];
 
 local images(distro, arch) = {
@@ -102,25 +110,23 @@ local images(distro, arch) = {
   platform: { os: 'linux', arch: arch },
   depends_on: ['checks'],
   steps: [build] + std.flattenArrays([
-    tagged_image(config, arch)
-    for config in configs
-    if config.distro == distro &&
-       std.count(config.arch, arch) > 0
+    tagged_image(target, arch)
+    for target in configs[distro].targets
   ]),
 };
 
-local manifest(config) = [{
-  name: '%s/template' % config.codename,
+local manifest(target) = [{
+  name: '%s/template' % target.codename,
   image: 'bash',
   environment: {
-    CODENAME: config.codename,
-    DATE: config.date,
+    CODENAME: target.codename,
+    DATE: target.date,
   },
   commands: [
     'docker/manifest.sh .manifest.tmpl',
   ],
 }, {
-  name: config.codename,
+  name: target.codename,
   image: 'plugins/manifest',
   settings: {
     username: { from_secret: 'docker_username' },
@@ -130,22 +136,27 @@ local manifest(config) = [{
   },
 }];
 
-local manifests(depends_on) = {
+local manifests(distro) = {
   kind: 'pipeline',
   type: 'docker',
-  name: 'manifests',
-  depends_on: [x.name for x in depends_on],
+  name: '%s/multi' % distro,
+  depends_on: [
+    '%s/%s' % [distro, arch]
+    for arch in configs[distro].arch
+  ],
   steps: std.flattenArrays([
-    manifest(config)
-    for config in configs
+    manifest(target)
+    for target in configs[distro].targets
   ]),
 };
 
-local buildSteps = [
-  images('debian', 'amd64'),
-  images('debian', 'arm64'),
-  images('debian', 'arm'),
-  images('ubuntu', 'amd64'),
-];
-
-[checks] + buildSteps + [manifests(buildSteps)]
+[
+  checks,
+] + [
+  images(distro, arch)
+  for distro in std.objectFields(configs)
+  for arch in configs[distro].arch
+] + [
+  manifests(distro)
+  for distro in std.objectFields(configs)
+]
