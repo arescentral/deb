@@ -60,7 +60,7 @@
          "name": "bullseye/dryrun",
          "settings": {
             "build_args": [
-               "BASE=debian:bullseye-20200607-slim"
+               "BASE=debian@sha256:19b8d640b8e542cf9e1ed259907cc196dcd4b2da031e8100e32a4aeb0d297120"
             ],
             "dockerfile": "docker/Dockerfile",
             "dry_run": true,
@@ -86,7 +86,7 @@
          "name": "bullseye/image",
          "settings": {
             "build_args": [
-               "BASE=debian:bullseye-20200607-slim"
+               "BASE=debian@sha256:19b8d640b8e542cf9e1ed259907cc196dcd4b2da031e8100e32a4aeb0d297120"
             ],
             "dockerfile": "docker/Dockerfile",
             "dry_run": false,
@@ -124,7 +124,7 @@
          "name": "buster/dryrun",
          "settings": {
             "build_args": [
-               "BASE=debian:buster-20200607-slim"
+               "BASE=debian@sha256:7c459309b9a5ec1683ef3b137f39ce5888f5ad0384e488ad73c94e0243bc77d4"
             ],
             "dockerfile": "docker/Dockerfile",
             "dry_run": true,
@@ -150,7 +150,7 @@
          "name": "buster/image",
          "settings": {
             "build_args": [
-               "BASE=debian:buster-20200607-slim"
+               "BASE=debian@sha256:7c459309b9a5ec1683ef3b137f39ce5888f5ad0384e488ad73c94e0243bc77d4"
             ],
             "dockerfile": "docker/Dockerfile",
             "dry_run": false,
@@ -188,7 +188,7 @@
          "name": "stretch/dryrun",
          "settings": {
             "build_args": [
-               "BASE=debian:stretch-20200607-slim"
+               "BASE=debian@sha256:a0862e5787377f554a71125399c1a1d03882498cc6b0a12d845f4b48244cad39"
             ],
             "dockerfile": "docker/Dockerfile",
             "dry_run": true,
@@ -214,7 +214,7 @@
          "name": "stretch/image",
          "settings": {
             "build_args": [
-               "BASE=debian:stretch-20200607-slim"
+               "BASE=debian@sha256:a0862e5787377f554a71125399c1a1d03882498cc6b0a12d845f4b48244cad39"
             ],
             "dockerfile": "docker/Dockerfile",
             "dry_run": false,
@@ -275,7 +275,7 @@
          "name": "bullseye/dryrun",
          "settings": {
             "build_args": [
-               "BASE=debian:bullseye-20200607-slim"
+               "BASE=debian@sha256:2c9e97b4c812e03743a5f87ca15de7377ca61497586d4b027aa439c34cd4b09b"
             ],
             "dockerfile": "docker/Dockerfile",
             "dry_run": true,
@@ -301,7 +301,7 @@
          "name": "bullseye/image",
          "settings": {
             "build_args": [
-               "BASE=debian:bullseye-20200607-slim"
+               "BASE=debian@sha256:2c9e97b4c812e03743a5f87ca15de7377ca61497586d4b027aa439c34cd4b09b"
             ],
             "dockerfile": "docker/Dockerfile",
             "dry_run": false,
@@ -339,7 +339,7 @@
          "name": "buster/dryrun",
          "settings": {
             "build_args": [
-               "BASE=debian:buster-20200607-slim"
+               "BASE=debian@sha256:9d2924f89b406cbb9ea45adba0d7b8cab9bb12dcb7f115d2d8589f0900e26d93"
             ],
             "dockerfile": "docker/Dockerfile",
             "dry_run": true,
@@ -365,7 +365,7 @@
          "name": "buster/image",
          "settings": {
             "build_args": [
-               "BASE=debian:buster-20200607-slim"
+               "BASE=debian@sha256:9d2924f89b406cbb9ea45adba0d7b8cab9bb12dcb7f115d2d8589f0900e26d93"
             ],
             "dockerfile": "docker/Dockerfile",
             "dry_run": false,
@@ -403,7 +403,7 @@
          "name": "stretch/dryrun",
          "settings": {
             "build_args": [
-               "BASE=debian:stretch-20200607-slim"
+               "BASE=debian@sha256:861e57d7e3ab6f4e4acdef605d6cc6c2c735914b3f90d36078b2653d0995bd5b"
             ],
             "dockerfile": "docker/Dockerfile",
             "dry_run": true,
@@ -429,7 +429,7 @@
          "name": "stretch/image",
          "settings": {
             "build_args": [
-               "BASE=debian:stretch-20200607-slim"
+               "BASE=debian@sha256:861e57d7e3ab6f4e4acdef605d6cc6c2c735914b3f90d36078b2653d0995bd5b"
             ],
             "dockerfile": "docker/Dockerfile",
             "dry_run": false,
@@ -490,7 +490,7 @@
          "name": "bullseye/dryrun",
          "settings": {
             "build_args": [
-               "BASE=debian:bullseye-20200607-slim"
+               "BASE=debian@sha256:1bd943abd61d0c7916f429459e941705e5e05fd08ffc89b80b0fe0a29354dab3"
             ],
             "dockerfile": "docker/Dockerfile",
             "dry_run": true,
@@ -516,7 +516,7 @@
          "name": "bullseye/image",
          "settings": {
             "build_args": [
-               "BASE=debian:bullseye-20200607-slim"
+               "BASE=debian@sha256:1bd943abd61d0c7916f429459e941705e5e05fd08ffc89b80b0fe0a29354dab3"
             ],
             "dockerfile": "docker/Dockerfile",
             "dry_run": false,
@@ -554,7 +554,7 @@
          "name": "buster/dryrun",
          "settings": {
             "build_args": [
-               "BASE=debian:buster-20200607-slim"
+               "BASE=debian@sha256:43e8691b4e25f4b0fd0f10bca8ea11b9f0578b0e5d2fe3b085290455dd07c0b6"
             ],
             "dockerfile": "docker/Dockerfile",
             "dry_run": true,
@@ -580,7 +580,7 @@
          "name": "buster/image",
          "settings": {
             "build_args": [
-               "BASE=debian:buster-20200607-slim"
+               "BASE=debian@sha256:43e8691b4e25f4b0fd0f10bca8ea11b9f0578b0e5d2fe3b085290455dd07c0b6"
             ],
             "dockerfile": "docker/Dockerfile",
             "dry_run": false,
@@ -618,7 +618,7 @@
          "name": "stretch/dryrun",
          "settings": {
             "build_args": [
-               "BASE=debian:stretch-20200607-slim"
+               "BASE=debian@sha256:6aac188bc15bac908192685068ef8512a2e51b5eb1138b663e9e33d1d98ade4b"
             ],
             "dockerfile": "docker/Dockerfile",
             "dry_run": true,
@@ -644,7 +644,7 @@
          "name": "stretch/image",
          "settings": {
             "build_args": [
-               "BASE=debian:stretch-20200607-slim"
+               "BASE=debian@sha256:6aac188bc15bac908192685068ef8512a2e51b5eb1138b663e9e33d1d98ade4b"
             ],
             "dockerfile": "docker/Dockerfile",
             "dry_run": false,
