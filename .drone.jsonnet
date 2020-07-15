@@ -12,6 +12,13 @@ local ubuntu(codename, date, base) = {
   base: base,
 };
 
+// https://hub.docker.com/layers/golang/library/golang/1.14.5/images/sha256-779ec9eb375f01c6a4acaf8de580e0e5aa6b38fd58d4794328fcac937ea776cf
+local golang = {
+  amd64: 'golang@sha256:8e727ee3f08eb26fce1c67333bfebf88296789b4d757fc2580cf06a903bf3f17',
+  arm64: 'golang@sha256:6d8e62d37c345562757bd9b65d3621ab60e5f704a0eb5b0384263a3b4a240729',
+  arm: 'golang@sha256:ed839b600e9b0f6f9c4dacd895355fa56e02652f01e873029c6fb997842bd7f4',
+};
+
 local configs = {
   debian: {
     arch: ['amd64', 'arm64', 'arm'],
@@ -66,9 +73,9 @@ local checks = {
   }],
 };
 
-local build = {
+local build(arch) = {
   name: 'build',
-  image: 'golang:1.14',
+  image: golang[arch],
   commands: [
     'go build -mod=vendor *.go',
     'ls -lh deb-drone',
@@ -121,7 +128,7 @@ local images(distro, arch) = {
   name: '%s/%s' % [distro, arch],
   platform: { os: 'linux', arch: arch },
   depends_on: ['checks'],
-  steps: [build] + std.flattenArrays([
+  steps: [build(arch)] + std.flattenArrays([
     tagged_image(target, arch)
     for target in configs[distro].targets
   ]),

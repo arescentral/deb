@@ -40,7 +40,7 @@
             "go build -mod=vendor *.go",
             "ls -lh deb-drone"
          ],
-         "image": "golang:1.14",
+         "image": "golang@sha256:8e727ee3f08eb26fce1c67333bfebf88296789b4d757fc2580cf06a903bf3f17",
          "name": "build"
       },
       {
@@ -255,7 +255,7 @@
             "go build -mod=vendor *.go",
             "ls -lh deb-drone"
          ],
-         "image": "golang:1.14",
+         "image": "golang@sha256:6d8e62d37c345562757bd9b65d3621ab60e5f704a0eb5b0384263a3b4a240729",
          "name": "build"
       },
       {
@@ -470,7 +470,7 @@
             "go build -mod=vendor *.go",
             "ls -lh deb-drone"
          ],
-         "image": "golang:1.14",
+         "image": "golang@sha256:ed839b600e9b0f6f9c4dacd895355fa56e02652f01e873029c6fb997842bd7f4",
          "name": "build"
       },
       {
@@ -685,7 +685,7 @@
             "go build -mod=vendor *.go",
             "ls -lh deb-drone"
          ],
-         "image": "golang:1.14",
+         "image": "golang@sha256:8e727ee3f08eb26fce1c67333bfebf88296789b4d757fc2580cf06a903bf3f17",
          "name": "build"
       },
       {
