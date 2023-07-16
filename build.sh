@@ -17,12 +17,12 @@ BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
 REVISION=2
 
 case $CODENAME in
-    bullseye|buster|stretch|jessie)
-        DIST=debian VERSION=$CODENAME-20200607 ;;
-    focal) DIST=ubuntu VERSION=$CODENAME-20200606 ;;
-    bionic) DIST=ubuntu VERSION=$CODENAME-20200526 ;;
-    xenial) DIST=ubuntu VERSION=$CODENAME-20200514 ;;
-    trusty) DIST=ubuntu VERSION=$CODENAME-20201217 ;;
+    bookworm|bullseye|buster)
+        DIST=debian VERSION=$CODENAME-20230703 ;;
+    jammy) DIST=ubuntu VERSION=$CODENAME-20230624 ;;
+    focal) DIST=ubuntu VERSION=$CODENAME-20230624 ;;
+    bionic) DIST=ubuntu VERSION=$CODENAME-20230530 ;;
+    xenial) DIST=ubuntu VERSION=$CODENAME-20210804 ;;
     *) echo >&2 "$CODENAME: unknown codename"; exit 1 ;;
 esac
 

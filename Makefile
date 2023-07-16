@@ -1,5 +1,5 @@
-DEBIAN=bullseye buster stretch
-UBUNTU=focal bionic xenial trusty
+DEBIAN=bookworm bullseye buster
+UBUNTU=jammy focal bionic xenial
 
 all: $(DEBIAN) $(UBUNTU)
 .PHONY: $(DEBIAN) $(UBUNTU)
