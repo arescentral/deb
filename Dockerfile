@@ -1,11 +1,10 @@
 ARG BASE
 
-FROM golang:1.20 AS builder
+FROM golang:1.20-buster AS builder
 
-COPY *.go go.* /src/
-COPY vendor/ /src/vendor/
+COPY . /src
 WORKDIR /src
-RUN go build *.go
+RUN go build ./cmd/deb-drone
 
 FROM $BASE
 

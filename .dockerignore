@@ -1,0 +1,7 @@
+/Dockerfile
+/Makefile
+/deb-drone
+/*.rst
+/*.txt
+/*.sh
+/.*
