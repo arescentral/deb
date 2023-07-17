@@ -46,8 +46,12 @@ func main() {
 	run("apt-get", "install", "-y", "--no-install-recommends", "./"+buildDeps)
 
 	runIn(buildDir, "dpkg-buildpackage")
+
+	// As of 2023-07-17, bookworm’s lintian flags an error for distribution “bookworm”
+	// For now, disable the warning so that package build can succeed.
 	changes := globSingle(filepath.Join(workDir, "*.changes"))
-	run("lintian", "--no-tag-display-limit", changes)
+	run("lintian", "--no-tag-display-limit", "--suppress-tags", "bad-distribution-in-changes-file", changes)
+
 	for _, src := range outputs(buildDir) {
 		cp(src, filepath.Base(src))
 	}
