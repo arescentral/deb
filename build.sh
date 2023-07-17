@@ -14,7 +14,7 @@ CODENAME=$1
 TITLE=arescentral/deb
 
 BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-REVISION=2
+REVISION=3
 
 case $CODENAME in
     bookworm|bullseye|buster)
@@ -27,7 +27,8 @@ case $CODENAME in
 esac
 
 case $DIST in
-    debian) BASE=debian:$VERSION-slim PLATFORMS=linux/amd64,linux/arm/v7,linux/arm64 ;;
+    debian) BASE=debian:$VERSION-slim PLATFORMS=linux/amd64 ;;
+    # debian) BASE=debian:$VERSION-slim PLATFORMS=linux/amd64,linux/arm/v7,linux/arm64 ;;
     ubuntu) BASE=ubuntu:$VERSION PLATFORMS=linux/amd64 ;;
 esac
 
