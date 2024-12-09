@@ -1,6 +1,6 @@
 ARG BASE
 
-FROM golang:1.20-buster AS builder
+FROM golang:1.22-bookworm AS builder
 
 COPY . /src
 WORKDIR /src
